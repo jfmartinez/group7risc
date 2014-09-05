@@ -1,3 +1,5 @@
+import java.io.File;
+
 /* CPU
  * 8 8-bit general purpose registers (R0 always 0, R1 an accumulator)
  * 
@@ -57,6 +59,10 @@ public class Simulator {
 		case 20:
 			break;
 		}
+	}
+	
+	public void loadRegister(File file){
+		
 	}
 }
 

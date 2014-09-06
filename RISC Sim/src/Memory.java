@@ -14,4 +14,7 @@ public class Memory{
 		public void reset(){
 			sysMem = new int[1024];
 		}
+
+
+
 	}

@@ -13,14 +13,13 @@ public class CodeReader {
     public static void main(String[] args) throws FileNotFoundException
     {
 
-        CodeReader reader = new CodeReader("code.txt");
+        CodeReader reader = new CodeReader("RISC Sim/code.txt");
 
         reader.extractCode();
         Memory mem = new Memory(memoryMirror);
         Simulator sim = new Simulator();
         sim.setMemory(mem);
-        Integer hex = 0x1234;
-        hex = hex << 4;
+
 
         sim.fetch();
         sim.decExe();

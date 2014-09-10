@@ -17,13 +17,16 @@ public class Memory{
         {
             sysMem = new_mem;
         }
+
 		//methods
 		public int get(int i){
 			return sysMem[i];
 		}
 			
 		public void set(int newValue, int i){
-			sysMem[i] = newValue;
+
+            if(checkAccess(i))
+              sysMem[i] = newValue;
 		}
 		
 		public void reset(){
@@ -34,13 +37,16 @@ public class Memory{
         private boolean checkAccess(int address_access)
         {
 
-             switch(address_access)
-             {
-                 case keyboard_location:
-                     ;
+            if(address_access == keyboard_location) return false;
 
+            if(address_access == parallel_in || address_access == parallel_out) return false;
 
-             }
+            if(address_access >= hex_display_min && address_access <= hex_display_max) return false;
+
+            if(address_access >= ascii_display && address_access <= ascii_display_final) return false;
+
+            else
+                return true;
 
         }
 

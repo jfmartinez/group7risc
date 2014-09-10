@@ -42,9 +42,9 @@ public class CPU{
 			}
 		}
 		public int getOpCode(){
-			String binString = Integer.toBinaryString(IR);
-			String opCode = binString.substring(0, 5);
-			int intOpCode = Integer.parseInt(opCode, 2);
-			return intOpCode;
+
+            int intOpCode = (IR & 0xF800) >> 11; //Shift Code 11 bits to get the first 5 bits
+            System.out.println("Opcode: " + intOpCode);
+            return intOpCode;
 		}
 	}

@@ -27,20 +27,21 @@ import java.io.File;
 public class Simulator {
 
 	CPU cpu = new CPU();
-	Memory mem = new Memory();
+	Memory mem;
 	int addressBus; // where the data is written to or read from
 	int dataBus; //data that is read or written
 	boolean controlBus; //true = 1 = write
 	boolean condBit; //altered by arithmetic/logic instructions
 	
-	private void fetch(){
+	public void fetch()
+    {
 		addressBus = cpu.get("PC");
 		controlBus = false;
 		dataBus = mem.get(addressBus);
 		cpu.set(dataBus, "IR"); //contents of data bus into IR
 	}
 	
-	private void decExe(){
+	public void decExe(){
 		// TODO IMPLEMENT ALL METHODS 
 		//Create a method for every instruction?
 		//Do the implementation of every instruction inside the switch?

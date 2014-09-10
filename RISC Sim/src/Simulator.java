@@ -52,9 +52,103 @@ public class Simulator {
 		//ARITMETICA
 		case 7:
 			break;
-		//LOGICA Y DESPLAZAMIENTO
-		case 11:
-			break;
+			 //LOGICA Y DESPLAZAMIENTO
+        case 11: {
+            System.out.println("AND Operation");
+            //Interpret F1 Format
+            int operands[] = interpretF1Format(cpu.get("IR"));
+
+
+            cpu.set(operands[1] & operands[2], String.valueOf(operands[0]));
+            System.out.println("[Rb]: " + hexString(operands[1]));
+            System.out.println("[Rc]: " + hexString(operands[2]));
+            System.out.println("[Ra]: " + hexString(cpu.get(String.valueOf(operands[0]))));
+
+
+            break;
+        }
+        case 12: {
+            System.out.println("OR Operation");
+
+            //Interpret F1 Format
+            int operands[] = interpretF1Format(cpu.get("IR"));
+
+            cpu.set(operands[1] | operands[2], String.valueOf(operands[0]));
+
+            break;
+
+        }
+        //XOR
+        case 13:{
+
+            //Interpret F1 Format
+            int operands[] = interpretF1Format(cpu.get("IR"));
+
+            cpu.set(operands[1] ^ operands[2], String.valueOf(operands[0]));
+
+            break;
+        }
+
+        //NOT
+        case 14:
+        {
+            //Interpret F1 Format
+            int operands[] = interpretF1Format(cpu.get("IR"));
+
+            cpu.set(~operands[1], String.valueOf(operands[0]));
+            break;
+
+        }
+
+        //NEG IMPLEMENT
+        case 15:
+        {
+            //Interpret F1 Format
+
+        }
+
+
+        //Shift Right SHR
+        case 16:
+        {
+            //Interpret F1 Format
+            int operands[] = interpretF1Format(cpu.get("IR"));
+
+            cpu.set(operands[1] >> operands[2], String.valueOf(operands[0]));
+
+            break;
+
+        }
+        //SHIFT LEFT SHL
+        case 17:
+        {
+            int operands[] = interpretF1Format(cpu.get("IR"));
+
+            cpu.set(operands[1] << operands[2], String.valueOf(operands[0]));
+
+            break;
+        }
+
+        //Rotate to Left RTL
+        case 18:
+        {
+            int operands[] = interpretF1Format(cpu.get("IR"));
+
+            cpu.set(Integer.rotateLeft(operands[1], operands[2]), String.valueOf(operands[0]));
+
+            break;
+
+        }
+
+        //Rotate to Right RTR
+        case 19:
+        {
+            int operands[] = interpretF1Format(cpu.get("IR"));
+
+            cpu.set(Integer.rotateRight(operands[1], operands[2]), String.valueOf(operands[0]));
+
+            break;
+        }
 		//BRINCOS Y CONTROL
 		case 20:
 			break;
@@ -64,6 +158,34 @@ public class Simulator {
 	public void loadRegister(File file){
 		
 	}
+	
+    public void setMemory(Memory new_mem)
+    {
+        mem = new_mem;
+    }
+
+    public String hexString(int i)
+    {
+        return Integer.toString(i, 16);
+    }
+
+    public int[] interpretF1Format(int instruction)
+    {
+        //Interpret F1 Format
+        int operands[] = new int[3];
+
+        operands[0] = (dataBus & 0x0700) >> 8; //Destination
+        int rb = (dataBus & 0x00E0) >> 5; //Value location
+        int rc = (dataBus & 0x001A) >> 2; //Value location
+
+        operands[1] = cpu.get(String.valueOf(rb));
+        operands[2] = cpu.get(String.valueOf(rc));
+
+
+
+        return operands;
+
+    }
 }
 
 

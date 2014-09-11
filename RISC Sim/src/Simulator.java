@@ -57,8 +57,7 @@ public class Simulator {
         case 11: {
             System.out.println("AND Operation");
             //Interpret F1 Format
-            int operands[] = interpretF1Format(cpu.get("IR"));
-
+            int operands[] = interpretF1Format();
 
             cpu.set(operands[1] & operands[2], String.valueOf(operands[0]));
             System.out.println("[Rb]: " + hexString(operands[1]));
@@ -72,7 +71,7 @@ public class Simulator {
             System.out.println("OR Operation");
 
             //Interpret F1 Format
-            int operands[] = interpretF1Format(cpu.get("IR"));
+            int operands[] = interpretF1Format();
 
             cpu.set(operands[1] | operands[2], String.valueOf(operands[0]));
 
@@ -81,9 +80,9 @@ public class Simulator {
         }
         //XOR
         case 13:{
-
+            System.out.println("XOR Operation");
             //Interpret F1 Format
-            int operands[] = interpretF1Format(cpu.get("IR"));
+            int operands[] = interpretF1Format();
 
             cpu.set(operands[1] ^ operands[2], String.valueOf(operands[0]));
 
@@ -93,8 +92,10 @@ public class Simulator {
         //NOT
         case 14:
         {
+            System.out.println("NOT Operation");
+
             //Interpret F1 Format
-            int operands[] = interpretF1Format(cpu.get("IR"));
+            int operands[] = interpretF1Format();
 
             cpu.set(~operands[1], String.valueOf(operands[0]));
             break;
@@ -104,7 +105,13 @@ public class Simulator {
         //NEG IMPLEMENT
         case 15:
         {
+            System.out.println("NEG Operation");
+
             //Interpret F1 Format
+            int operands[] = interpretF1Format();
+
+            cpu.set((~operands[1]) +1, String.valueOf(operands[0]));
+            break;
 
         }
 
@@ -112,8 +119,10 @@ public class Simulator {
         //Shift Right SHR
         case 16:
         {
+            System.out.println("SHR Operation");
+
             //Interpret F1 Format
-            int operands[] = interpretF1Format(cpu.get("IR"));
+            int operands[] = interpretF1Format();
 
             cpu.set(operands[1] >> operands[2], String.valueOf(operands[0]));
 
@@ -123,7 +132,9 @@ public class Simulator {
         //SHIFT LEFT SHL
         case 17:
         {
-            int operands[] = interpretF1Format(cpu.get("IR"));
+            System.out.println("SHL Operation");
+
+            int operands[] = interpretF1Format();
 
             cpu.set(operands[1] << operands[2], String.valueOf(operands[0]));
 
@@ -133,7 +144,9 @@ public class Simulator {
         //Rotate to Left RTL
         case 18:
         {
-            int operands[] = interpretF1Format(cpu.get("IR"));
+            System.out.println("RTL Operation");
+
+            int operands[] = interpretF1Format();
 
             cpu.set(Integer.rotateLeft(operands[1], operands[2]), String.valueOf(operands[0]));
 
@@ -144,7 +157,9 @@ public class Simulator {
         //Rotate to Right RTR
         case 19:
         {
-            int operands[] = interpretF1Format(cpu.get("IR"));
+            System.out.println("RTR Operation");
+
+            int operands[] = interpretF1Format();
 
             cpu.set(Integer.rotateRight(operands[1], operands[2]), String.valueOf(operands[0]));
 
@@ -170,10 +185,12 @@ public class Simulator {
         return Integer.toString(i, 16);
     }
 
-    public int[] interpretF1Format(int instruction)
+    public int[] interpretF1Format()
     {
         //Interpret F1 Format
         int operands[] = new int[3];
+
+        int instruction = cpu.get("IR");
 
         operands[0] = (dataBus & 0x0700) >> 8; //Destination
         int rb = (dataBus & 0x00E0) >> 5; //Value location
@@ -182,11 +199,23 @@ public class Simulator {
         operands[1] = cpu.get(String.valueOf(rb));
         operands[2] = cpu.get(String.valueOf(rc));
 
-
-
         return operands;
 
     }
+
+    //I/O Methods
+
+    //Keyboard input
+    public void inputKeyboad(String input)
+    {
+
+        int hexInput = Integer.valueOf(input, 16);
+
+        mem.set(hexInput, 128);
+    }
+
+
+
 }
 
 

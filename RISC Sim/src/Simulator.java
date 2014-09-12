@@ -57,6 +57,11 @@ public class Simulator {
             fetch_done = false;
         }
 	}
+
+    public void fetchFullIR(){
+        fetch();
+        fetch();
+    }
 	
 	public void decExe(){
 		// TODO IMPLEMENT ALL METHODS 

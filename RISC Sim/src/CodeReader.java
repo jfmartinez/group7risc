@@ -21,7 +21,7 @@ public class CodeReader {
         sim.setMemory(mem);
 
 
-        sim.fetch();
+        sim.fetchFullIR();
         sim.decExe();
 
 
@@ -31,7 +31,7 @@ public class CodeReader {
     {
         programFile = new File(filePath);
         System.out.println("Path: " + programFile.getAbsolutePath());
-        memoryMirror = new int[2096];
+        memoryMirror = new int[2048];
 
         String number = "000A";
         System.out.println(Long.parseLong(number, 16));

@@ -28,17 +28,34 @@ public class Simulator {
 
 	CPU cpu = new CPU();
 	Memory mem;
+
 	int addressBus; // where the data is written to or read from
 	int dataBus; //data that is read or written
 	boolean controlBus; //true = 1 = write
 	boolean condBit; //altered by arithmetic/logic instructions
-	
+    int fetch_count = 0;
+    boolean fetch_done = false;
+
 	public void fetch()
     {
 		addressBus = cpu.get("PC");
 		controlBus = false;
+
 		dataBus = mem.get(addressBus);
-		cpu.set(dataBus, "IR"); //contents of data bus into IR
+
+        cpu.pushIR(dataBus);
+
+        cpu.set(addressBus + 1, "PC");
+
+        if(fetch_count == 1) //Done fetching
+        {
+            fetch_count = 0;
+            fetch_done = true;
+        }
+        else {
+            fetch_count++;
+            fetch_done = false;
+        }
 	}
 	
 	public void decExe(){
@@ -49,6 +66,7 @@ public class Simulator {
 		//MOVIMIENTO DE DATOS
 		case 0:
 			//call method for 0
+
 			break;
 		//ARITMETICA
 		case 7:
@@ -63,8 +81,6 @@ public class Simulator {
             System.out.println("[Rb]: " + hexString(operands[1]));
             System.out.println("[Rc]: " + hexString(operands[2]));
             System.out.println("[Ra]: " + hexString(cpu.get(String.valueOf(operands[0]))));
-
-
             break;
         }
         case 12: {
@@ -189,15 +205,22 @@ public class Simulator {
     {
         //Interpret F1 Format
         int operands[] = new int[3];
-
+        //Pull instruction
         int instruction = cpu.get("IR");
 
-        operands[0] = (dataBus & 0x0700) >> 8; //Destination
-        int rb = (dataBus & 0x00E0) >> 5; //Value location
-        int rc = (dataBus & 0x001A) >> 2; //Value location
+        //Gather the destination
+        operands[0] = (instruction >> 8) & 0x7; //Destination
 
-        operands[1] = cpu.get(String.valueOf(rb));
-        operands[2] = cpu.get(String.valueOf(rc));
+        int rb = (instruction >> 5) & 0x7; //Value location
+        int rc = (instruction >> 2) & 0x7; //Value location
+
+        operands[1] = cpu.get(String.valueOf(rb)); //Value in Rb
+        operands[2] = cpu.get(String.valueOf(rc)); //Value in Rc
+
+        System.out.println("Ra: " + operands[0]);
+        System.out.println("Rb: " + operands[1]);
+        System.out.println("Rc: " + operands[2]);
+
 
         return operands;
 
@@ -213,6 +236,8 @@ public class Simulator {
 
         mem.set(hexInput, 128);
     }
+
+
 
 
 

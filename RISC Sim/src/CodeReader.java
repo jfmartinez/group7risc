@@ -31,7 +31,7 @@ public class CodeReader {
     {
         programFile = new File(filePath);
         System.out.println("Path: " + programFile.getAbsolutePath());
-        memoryMirror = new int[1024];
+        memoryMirror = new int[2096];
 
         String number = "000A";
         System.out.println(Long.parseLong(number, 16));
@@ -59,18 +59,19 @@ public class CodeReader {
                 long address_number = Long.parseLong(address, 16);
 
 
-                String big_endian_one = data.substring(0,2);
-                String big_endian_two = data.substring(2,4);
+                String most_significant_bits = data.substring(0,2);
+                String least_significant_bits = data.substring(2,4);
 
-
-                memoryMirror[(int)address_number] = (int) Integer.parseInt(data, 16);
+                //Copies to memory
+                memoryMirror[(int)address_number] = (int) Integer.parseInt(most_significant_bits, 16);
+                memoryMirror[(int)address_number + 1] = (int) Integer.parseInt(least_significant_bits, 16);
 
             }
-
-            for(int i = 0; i < memoryMirror.length; i++)
-            {
-                System.out.println("Content: " + memoryMirror[i]);
-            }
+//
+//            for(int i = 0; i < memoryMirror.length; i++)
+//            {
+//                System.out.println("Content: " + Integer.toHexString(memoryMirror[i]) );
+//            }
 
             reader.close();
         }

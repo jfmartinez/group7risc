@@ -36,12 +36,12 @@ public class Simulator {
     int fetch_count = 0;
     boolean fetch_done = false;
 
-	
-	
+
+
 	public Simulator(){
 		cpu = new CPU();
 	}
-	
+
 	public void fetch()
     {
 		addressBus = cpu.get("PC");
@@ -68,9 +68,9 @@ public class Simulator {
         fetch();
         fetch();
     }
-	
+
 	public void decExe(){
-		// TODO IMPLEMENT ALL METHODS 
+		// TODO IMPLEMENT ALL METHODS
 		//Create a method for every instruction?
 		//Do the implementation of every instruction inside the switch?
 		switch (cpu.getOpCode()){
@@ -197,13 +197,15 @@ public class Simulator {
 			break;
 		}
 	}
-	
+
 	public void loadRegister(File file){
 		CodeReader codereader = new CodeReader(file);
 		codereader.extractCode();
-		mem = new Memory(codereader.getMemoryMirror());			
-	}
-	
+		mem = new Memory(codereader.getMemoryMirror());
+
+
+    }
+
     public void setMemory(Memory new_mem)
     {
         mem = new_mem;
@@ -258,19 +260,39 @@ public class Simulator {
     	}
     	return result;
     }
-    
+
     public String getRegisterContents(String reg){
     	return ""+cpu.get(reg);
     }
-    
+
     public String getKeyboard(){return ""+mem.get(128);}
     public String getParIn(){return ""+mem.get(130);}
     public String getParOut(){return ""+mem.get(132);}
     public String getHex(){
     	return "testHex";
     }
+
+    /**
+     * Gets the ASCII Display contents in the memory
+     * @return String representing the ascii content
+     */
     public String getAscii(){
-    	return "testAscii";
+        String display = "";
+
+        int i = 0;
+        while(i < 15)
+        {
+
+            int byteOne = mem.get(140 + i); //Retrieve byte
+
+            char c1 = (char) byteOne; //int to ASCII
+
+            display += c1;
+            i++;
+        }
+        System.out.println(display);
+
+        return display;
     }
 
     public String getAddressBus(){return ""+addressBus;}
@@ -278,6 +300,9 @@ public class Simulator {
     	if (controlBus) return "1";
     	else return "0";
     }
+
+
+
     public String getDataBus(){return ""+dataBus;}
     public String getCondBit(){
     	if (condBit) return "1";

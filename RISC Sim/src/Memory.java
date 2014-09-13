@@ -12,7 +12,7 @@ public class Memory{
 
         private final int ascii_display = 140;
         private final int ascii_display_final = 155;
-        private final int MEMORY_SIZE = 1024;
+        private final int MEMORY_SIZE = 2048;
 
         
         //constructor
@@ -30,7 +30,8 @@ public class Memory{
 			
 		public void set(int newValue, int i){
 
-            if(checkAccess(i))
+//            if(checkAccess(i))
+              System.out.println("Memory Address: " + i + ", Value: " + newValue);
               sysMem[i] = newValue;
 		}
 		
@@ -52,9 +53,13 @@ public class Memory{
                 return true;
         }
 
+
+
         public int getMemorySize(){
         	return MEMORY_SIZE;
         }
+
+
 
 
 

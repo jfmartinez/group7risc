@@ -10,22 +10,6 @@ public class CodeReader {
 
     private static int[] memoryMirror;
 
-//    public static void main(String[] args) throws FileNotFoundException
-//    {
-//
-//        CodeReader reader = new CodeReader("RISC Sim/code.txt");
-//
-//        reader.extractCode();
-//        Memory mem = new Memory(memoryMirror);
-//        Simulator sim = new Simulator();
-//        sim.setMemory(mem);
-//
-//
-//        sim.fetch();
-//        sim.decExe();
-//
-//
-//    }
 
     public CodeReader(String filePath)
     {
@@ -41,7 +25,7 @@ public class CodeReader {
     public CodeReader(File file)
     {
         programFile = file;
-        memoryMirror = new int[1024];
+        memoryMirror = new int[2048];
 
     }
 
@@ -70,7 +54,9 @@ public class CodeReader {
                 String big_endian_two = data.substring(2,4);
 
 
-                memoryMirror[(int)address_number] = (int) Integer.parseInt(data, 16);
+                memoryMirror[(int)address_number] = (int) Integer.parseInt(big_endian_one, 16);
+                memoryMirror[(int)address_number + 1] = (int) Integer.parseInt(big_endian_two, 16);
+
 
             }
 

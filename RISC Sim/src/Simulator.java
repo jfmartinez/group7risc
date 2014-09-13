@@ -26,12 +26,18 @@ import java.io.File;
  */
 public class Simulator {
 
-	CPU cpu = new CPU();
+	CPU cpu;
 	Memory mem;
 	int addressBus; // where the data is written to or read from
 	int dataBus; //data that is read or written
 	boolean controlBus; //true = 1 = write
 	boolean condBit; //altered by arithmetic/logic instructions
+	
+	
+	
+	public Simulator(){
+		cpu = new CPU();
+	}
 	
 	public void fetch()
     {
@@ -172,7 +178,9 @@ public class Simulator {
 	}
 	
 	public void loadRegister(File file){
-		
+		CodeReader codereader = new CodeReader(file);
+		codereader.extractCode();
+		mem = new Memory(codereader.getMemoryMirror());			
 	}
 	
     public void setMemory(Memory new_mem)
@@ -214,8 +222,38 @@ public class Simulator {
         mem.set(hexInput, 128);
     }
 
+    //String getters
+    public String getMemoryContents(){
+    	String result="";
+    	for(int i=0;i<mem.getMemorySize();i++){
+    		result = result.concat(i+": "+hexString(mem.get(i))+"\n");
+    	}
+    	return result;
+    }
+    
+    public String getRegisterContents(String reg){
+    	return ""+cpu.get(reg);
+    }
+    
+    public String getKeyboard(){return ""+mem.get(128);}
+    public String getParIn(){return ""+mem.get(130);}
+    public String getParOut(){return ""+mem.get(132);}
+    public String getHex(){
+    	return "testHex";
+    }
+    public String getAscii(){
+    	return "testAscii";
+    }
 
-
+    public String getAddressBus(){return ""+addressBus;}
+    public String getControlBus(){
+    	if (controlBus) return "1";
+    	else return "0";
+    }
+    public String getDataBus(){return ""+dataBus;}
+    public String getCondBit(){
+    	if (condBit) return "1";
+    	else return "0";}
 }
 
 

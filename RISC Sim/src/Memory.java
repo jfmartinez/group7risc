@@ -1,6 +1,6 @@
 public class Memory{
 		//variables
-		int[] sysMem = new int[2048];
+		int[] sysMem;
 
         private final int keyboard_location = 128;
 
@@ -12,12 +12,17 @@ public class Memory{
 
         private final int ascii_display = 140;
         private final int ascii_display_final = 155;
+        private final int MEMORY_SIZE = 1024;
 
+        
+        //constructor
         public Memory(int[] new_mem)
         {
             sysMem = new_mem;
         }
 
+        
+        
 		//methods
 		public int get(int i){
 			return sysMem[i];
@@ -30,13 +35,11 @@ public class Memory{
 		}
 		
 		public void reset(){
-			sysMem = new int[1024];
+			sysMem = new int[MEMORY_SIZE];
 		}
 
 
-        private boolean checkAccess(int address_access)
-        {
-
+        private boolean checkAccess(int address_access){
             if(address_access == keyboard_location) return false;
 
             if(address_access == parallel_in || address_access == parallel_out) return false;
@@ -47,10 +50,11 @@ public class Memory{
 
             else
                 return true;
-
         }
 
-
+        public int getMemorySize(){
+        	return MEMORY_SIZE;
+        }
 
 
 

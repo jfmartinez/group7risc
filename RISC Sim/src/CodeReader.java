@@ -10,22 +10,22 @@ public class CodeReader {
 
     private static int[] memoryMirror;
 
-    public static void main(String[] args) throws FileNotFoundException
-    {
-
-        CodeReader reader = new CodeReader("RISC Sim/code.txt");
-
-        reader.extractCode();
-        Memory mem = new Memory(memoryMirror);
-        Simulator sim = new Simulator();
-        sim.setMemory(mem);
-
-
-        sim.fetch();
-        sim.decExe();
-
-
-    }
+//    public static void main(String[] args) throws FileNotFoundException
+//    {
+//
+//        CodeReader reader = new CodeReader("RISC Sim/code.txt");
+//
+//        reader.extractCode();
+//        Memory mem = new Memory(memoryMirror);
+//        Simulator sim = new Simulator();
+//        sim.setMemory(mem);
+//
+//
+//        sim.fetch();
+//        sim.decExe();
+//
+//
+//    }
 
     public CodeReader(String filePath)
     {
@@ -35,6 +35,13 @@ public class CodeReader {
 
         String number = "000A";
         System.out.println(Long.parseLong(number, 16));
+
+    }
+    
+    public CodeReader(File file)
+    {
+        programFile = file;
+        memoryMirror = new int[1024];
 
     }
 
@@ -80,5 +87,10 @@ public class CodeReader {
             ex.printStackTrace();
         }
     }
+    
 
+
+    public int[] getMemoryMirror(){
+    	return memoryMirror;
+    }
 }

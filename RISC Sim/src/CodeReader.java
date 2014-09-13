@@ -10,31 +10,38 @@ public class CodeReader {
 
     private static int[] memoryMirror;
 
-    public static void main(String[] args) throws FileNotFoundException
-    {
-
-        CodeReader reader = new CodeReader("RISC Sim/code.txt");
-
-        reader.extractCode();
-        Memory mem = new Memory(memoryMirror);
-        Simulator sim = new Simulator();
-        sim.setMemory(mem);
-
-
-        sim.fetchFullIR();
-        sim.decExe();
-
-
-    }
+//    public static void main(String[] args) throws FileNotFoundException
+//    {
+//
+//        CodeReader reader = new CodeReader("RISC Sim/code.txt");
+//
+//        reader.extractCode();
+//        Memory mem = new Memory(memoryMirror);
+//        Simulator sim = new Simulator();
+//        sim.setMemory(mem);
+//
+//
+//        sim.fetch();
+//        sim.decExe();
+//
+//
+//    }
 
     public CodeReader(String filePath)
     {
         programFile = new File(filePath);
         System.out.println("Path: " + programFile.getAbsolutePath());
-        memoryMirror = new int[2048];
+        memoryMirror = new int[1024];
 
         String number = "000A";
         System.out.println(Long.parseLong(number, 16));
+
+    }
+    
+    public CodeReader(File file)
+    {
+        programFile = file;
+        memoryMirror = new int[1024];
 
     }
 
@@ -59,19 +66,18 @@ public class CodeReader {
                 long address_number = Long.parseLong(address, 16);
 
 
-                String most_significant_bits = data.substring(0,2);
-                String least_significant_bits = data.substring(2,4);
+                String big_endian_one = data.substring(0,2);
+                String big_endian_two = data.substring(2,4);
 
-                //Copies to memory
-                memoryMirror[(int)address_number] = (int) Integer.parseInt(most_significant_bits, 16);
-                memoryMirror[(int)address_number + 1] = (int) Integer.parseInt(least_significant_bits, 16);
+
+                memoryMirror[(int)address_number] = (int) Integer.parseInt(data, 16);
 
             }
-//
-//            for(int i = 0; i < memoryMirror.length; i++)
-//            {
-//                System.out.println("Content: " + Integer.toHexString(memoryMirror[i]) );
-//            }
+
+            for(int i = 0; i < memoryMirror.length; i++)
+            {
+                System.out.println("Content: " + memoryMirror[i]);
+            }
 
             reader.close();
         }
@@ -81,5 +87,10 @@ public class CodeReader {
             ex.printStackTrace();
         }
     }
+    
 
+
+    public int[] getMemoryMirror(){
+    	return memoryMirror;
+    }
 }

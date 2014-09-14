@@ -77,8 +77,14 @@ public class Simulator {
 
     public void stepExecution()
     {
-        fetchFullIR();
-        decExe();
+        if(!stop) {
+            fetchFullIR();
+            decExe();
+        }
+
+        else{
+            // Do nothing
+        }
     }
 
     public void Execution() {
@@ -87,6 +93,7 @@ public class Simulator {
         }while(this.stop == false);
 
     }
+
 
     public void decExe(){
         // TODO IMPLEMENT ALL METHODS
@@ -595,6 +602,11 @@ public class Simulator {
         else return "0";}
 
 
+    public void editRegisters(String registerID, int value){
+
+
+         cpu.set(value, registerID);
+    }
 }
 
 

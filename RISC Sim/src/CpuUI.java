@@ -151,25 +151,67 @@ public class CpuUI extends javax.swing.JFrame {
 
         pcField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pcFieldActionPerformed(evt);
+                System.out.println("Refresh");
+
+                simulator.editRegisters("PC", Integer.valueOf(pcField.getText(), 16));
+                System.out.println("Refresh");
+                setFieldText();
             }
         });
-        
+
+        r0Field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulator.editRegisters("0", Integer.valueOf(r0Field.getText(), 16));
+                setFieldText();
+            }
+        });
         r1Field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                r1FieldActionPerformed(evt);
+                simulator.editRegisters("1", Integer.valueOf(r1Field.getText(), 16));
+                setFieldText();
+            }
+        });
+
+        r2Field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulator.editRegisters("2", Integer.valueOf(r2Field.getText(), 16));
+                setFieldText();
+
             }
         });
 
         r3Field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                r3FieldActionPerformed(evt);
+                simulator.editRegisters("3", Integer.valueOf(r3Field.getText(), 16));
+                setFieldText();
             }
         });
 
         r4Field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                r4FieldActionPerformed(evt);
+                simulator.editRegisters("4", Integer.valueOf(r4Field.getText(), 16));
+                setFieldText();
+            }
+        });
+
+        r5Field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulator.editRegisters("5", Integer.valueOf(r5Field.getText(), 16));
+                setFieldText();
+            }
+        });
+
+        r6Field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulator.editRegisters("6", Integer.valueOf(r6Field.getText(), 16));
+                setFieldText();
+            }
+        });
+
+        r7Field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulator.editRegisters("7", Integer.valueOf(r7Field.getText(), 16));
+                setFieldText();
             }
         });
         
@@ -193,7 +235,22 @@ public class CpuUI extends javax.swing.JFrame {
 
         stepExecuteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+                simulator.editRegisters("0", Integer.valueOf(r0Field.getText(), 16));
+                simulator.editRegisters("1", Integer.valueOf(r1Field.getText(), 16));
+                simulator.editRegisters("2", Integer.valueOf(r2Field.getText(), 16));
+                simulator.editRegisters("3", Integer.valueOf(r3Field.getText(), 16));
+                simulator.editRegisters("4", Integer.valueOf(r4Field.getText(), 16));
+                simulator.editRegisters("5", Integer.valueOf(r5Field.getText(), 16));
+                simulator.editRegisters("6", Integer.valueOf(r6Field.getText(), 16));
+                simulator.editRegisters("7", Integer.valueOf(r7Field.getText(), 16));
+                simulator.editRegisters("PC", Integer.valueOf(pcField.getText(), 16));
+                simulator.editRegisters("IR", Integer.valueOf(irField.getText(), 16));
+
+
                 simulator.stepExecution();
+
+
                 setFieldText();
             }
         });

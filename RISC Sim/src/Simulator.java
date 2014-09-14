@@ -1,4 +1,3 @@
-package src;
 
 import java.io.File;
 
@@ -28,45 +27,45 @@ import java.io.File;
  */
 public class Simulator {
 
-	CPU cpu;
-	Memory mem;
+    CPU cpu;
+    Memory mem;
 
-	int addressBus; // where the data is written to or read from
-	int dataBus; //data that is read or written
-	boolean controlBus; //true = 1 = write
-	boolean condBit; //altered by arithmetic/logic instructions
-        int fetch_count = 0;
-        boolean fetch_done = false;
-        boolean stop=false;
+    int addressBus; // where the data is written to or read from
+    int dataBus; //data that is read or written
+    boolean controlBus; //true = 1 = write
+    boolean condBit; //altered by arithmetic/logic instructions
+    int fetch_count = 0;
+    boolean fetch_done = false;
+    boolean stop=false;
 
 
 
-	public Simulator(){
-		cpu = new CPU();
-	}
-        
-        public void cycle(){
-            do{
-                fetch();
-                decExe();
-                
-            }while(stop=false);
-            
-            //Stop cycle 
-        }
-        
-        public void cycleStep(){
-                
-                fetch();
-                decExe();
-        }
+    public Simulator(){
+        cpu = new CPU();
+    }
 
-	public void fetch()
+    public void cycle(){
+        do{
+            fetch();
+            decExe();
+
+        }while(stop=false);
+
+        //Stop cycle
+    }
+
+    public void cycleStep(){
+
+        fetch();
+        decExe();
+    }
+
+    public void fetch()
     {
-		addressBus = cpu.get("PC");
-		controlBus = false;
+        addressBus = cpu.get("PC");
+        controlBus = false;
 
-		dataBus = mem.get(addressBus);
+        dataBus = mem.get(addressBus);
 
         cpu.pushIR(dataBus);
 
@@ -81,273 +80,273 @@ public class Simulator {
             fetch_count++;
             fetch_done = false;
         }
-	}
+    }
 
     public void fetchFullIR(){
         fetch();
         fetch();
     }
 
-	public void decExe(){
-		// TODO IMPLEMENT ALL METHODS
-		//Create a method for every instruction?
-		//Do the implementation of every instruction inside the switch?
-		switch (cpu.getOpCode()){
-		//MOVIMIENTO DE DATOS
-		case 0:
-			//call method for 0
+    public void decExe(){
+        // TODO IMPLEMENT ALL METHODS
+        //Create a method for every instruction?
+        //Do the implementation of every instruction inside the switch?
+        switch (cpu.getOpCode()){
+            //MOVIMIENTO DE DATOS
+            case 0:
+                //call method for 0
 
-			break;
-		//ARITMETICA
-		case 7:
-			break;
-			 //LOGICA Y DESPLAZAMIENTO
-        case 11: {
-            System.out.println("AND Operation");
-            //Interpret F1 Format
-            int operands[] = interpretF1Format();
+                break;
+            //ARITMETICA
+            case 7:
+                break;
+            //LOGICA Y DESPLAZAMIENTO
+            case 11: {
+                System.out.println("AND Operation");
+                //Interpret F1 Format
+                int operands[] = interpretF1Format();
 
-            cpu.set(operands[1] & operands[2], String.valueOf(operands[0]));
-            System.out.println("[Rb]: " + hexString(operands[1]));
-            System.out.println("[Rc]: " + hexString(operands[2]));
-            System.out.println("[Ra]: " + hexString(cpu.get(String.valueOf(operands[0]))));
-            break;
-        }
-        case 12: {
-            System.out.println("OR Operation");
+                cpu.set(operands[1] & operands[2], String.valueOf(operands[0]));
+                System.out.println("[Rb]: " + hexString(operands[1]));
+                System.out.println("[Rc]: " + hexString(operands[2]));
+                System.out.println("[Ra]: " + hexString(cpu.get(String.valueOf(operands[0]))));
+                break;
+            }
+            case 12: {
+                System.out.println("OR Operation");
 
-            //Interpret F1 Format
-            int operands[] = interpretF1Format();
+                //Interpret F1 Format
+                int operands[] = interpretF1Format();
 
-            cpu.set(operands[1] | operands[2], String.valueOf(operands[0]));
+                cpu.set(operands[1] | operands[2], String.valueOf(operands[0]));
 
-            break;
+                break;
 
-        }
-        //XOR
-        case 13:{
-            System.out.println("XOR Operation");
-            //Interpret F1 Format
-            int operands[] = interpretF1Format();
+            }
+            //XOR
+            case 13:{
+                System.out.println("XOR Operation");
+                //Interpret F1 Format
+                int operands[] = interpretF1Format();
 
-            cpu.set(operands[1] ^ operands[2], String.valueOf(operands[0]));
+                cpu.set(operands[1] ^ operands[2], String.valueOf(operands[0]));
 
-            break;
-        }
-
-        //NOT
-        case 14:
-        {
-            System.out.println("NOT Operation");
-
-            //Interpret F1 Format
-            int operands[] = interpretF1Format();
-
-            cpu.set(~operands[1], String.valueOf(operands[0]));
-            break;
-
-        }
-
-        //NEG IMPLEMENT
-        case 15:
-        {
-            System.out.println("NEG Operation");
-
-            //Interpret F1 Format
-            int operands[] = interpretF1Format();
-
-            cpu.set((~operands[1]) +1, String.valueOf(operands[0]));
-            break;
-
-        }
-
-
-        //Shift Right SHR
-        case 16:
-        {
-            System.out.println("SHR Operation");
-
-            //Interpret F1 Format
-            int operands[] = interpretF1Format();
-
-            cpu.set(operands[1] >> operands[2], String.valueOf(operands[0]));
-
-            break;
-
-        }
-        //SHIFT LEFT SHL
-        case 17:
-        {
-            System.out.println("SHL Operation");
-
-            int operands[] = interpretF1Format();
-
-            cpu.set(operands[1] << operands[2], String.valueOf(operands[0]));
-            
-
-            break;
-        }
-
-        //Rotate to Left RTL
-        case 18:
-        {
-            System.out.println("RTL Operation");
-
-            int operands[] = interpretF1Format();
-
-            cpu.set(Integer.rotateLeft(operands[1], operands[2]), String.valueOf(operands[0]));
-
-            break;
-
-        }
-
-        //Rotate to Right RTR
-        case 19:
-        {
-            System.out.println("RTR Operation");
-
-            int operands[] = interpretF1Format();
-
-            cpu.set(Integer.rotateRight(operands[1], operands[2]), String.valueOf(operands[0]));
-
-            break;
-        }
-	//BRINCOS Y CONTROL
-	 case 20:
-        {
-            System.out.println("JMPR Operation");
-
-            int operands[] = interpretF1Format();
-
-            cpu.set(operands[0], "PC");
-            
-
-            break;
-        }
-          case 21:
-        {
-            System.out.println("JMPA Operation");
-
-            int addr = interpretF3Format();
-
-            cpu.set(addr, "PC");            
-
-            break;
-        }
-        
-           case 22:
-        {
-            System.out.println("JCR Operation");
-
-            int operands[] = interpretF1Format();
-            
-            if(this.condBit ==true){
-                 cpu.set(operands[0], "PC");
+                break;
             }
 
-            break;
-        }
-        
-            case 23:
-        {
-            System.out.println("JCA Operation");
+            //NOT
+            case 14:
+            {
+                System.out.println("NOT Operation");
 
-            int addr = interpretF3Format();
+                //Interpret F1 Format
+                int operands[] = interpretF1Format();
 
-            if(this.condBit ==true){
+                cpu.set(~operands[1], String.valueOf(operands[0]));
+                break;
+
+            }
+
+            //NEG IMPLEMENT
+            case 15:
+            {
+                System.out.println("NEG Operation");
+
+                //Interpret F1 Format
+                int operands[] = interpretF1Format();
+
+                cpu.set((~operands[1]) +1, String.valueOf(operands[0]));
+                break;
+
+            }
+
+
+            //Shift Right SHR
+            case 16:
+            {
+                System.out.println("SHR Operation");
+
+                //Interpret F1 Format
+                int operands[] = interpretF1Format();
+
+                cpu.set(operands[1] >> operands[2], String.valueOf(operands[0]));
+
+                break;
+
+            }
+            //SHIFT LEFT SHL
+            case 17:
+            {
+                System.out.println("SHL Operation");
+
+                int operands[] = interpretF1Format();
+
+                cpu.set(operands[1] << operands[2], String.valueOf(operands[0]));
+
+
+                break;
+            }
+
+            //Rotate to Left RTL
+            case 18:
+            {
+                System.out.println("RTL Operation");
+
+                int operands[] = interpretF1Format();
+
+                cpu.set(Integer.rotateLeft(operands[1], operands[2]), String.valueOf(operands[0]));
+
+                break;
+
+            }
+
+            //Rotate to Right RTR
+            case 19:
+            {
+                System.out.println("RTR Operation");
+
+                int operands[] = interpretF1Format();
+
+                cpu.set(Integer.rotateRight(operands[1], operands[2]), String.valueOf(operands[0]));
+
+                break;
+            }
+            //BRINCOS Y CONTROL
+            case 20:
+            {
+                System.out.println("JMPR Operation");
+
+                int operands[] = interpretF1Format();
+
+                cpu.set(operands[0], "PC");
+
+
+                break;
+            }
+            case 21:
+            {
+                System.out.println("JMPA Operation");
+
+                int addr = interpretF3Format();
+
                 cpu.set(addr, "PC");
+
+                break;
             }
-            break;
-        }
-            
-         case 24:
-        {
-            System.out.println("LOOP Operation");
 
-            int operands[] = interpretF2Format();
-            int loop= operands[0];
-           
-            while(loop!=0){
-                loop--;
-                cpu.set(loop, String.valueOf(operands[0]));
+            case 22:
+            {
+                System.out.println("JCR Operation");
+
+                int operands[] = interpretF1Format();
+
+                if(this.condBit ==true){
+                    cpu.set(operands[0], "PC");
+                }
+
+                break;
             }
-            cpu.set(operands[1], "PC");
 
-            break;
+            case 23:
+            {
+                System.out.println("JCA Operation");
+
+                int addr = interpretF3Format();
+
+                if(this.condBit ==true){
+                    cpu.set(addr, "PC");
+                }
+                break;
+            }
+
+            case 24:
+            {
+                System.out.println("LOOP Operation");
+
+                int operands[] = interpretF2Format();
+                int loop= operands[0];
+
+                while(loop!=0){
+                    loop--;
+                    cpu.set(loop, String.valueOf(operands[0]));
+                }
+                cpu.set(operands[1], "PC");
+
+                break;
+            }
+
+            case 25:
+            {
+                System.out.println("GR Operation");
+
+                int operands[] = interpretF1Format();
+
+                this.condBit= operands[0] > operands[1];
+
+                break;
+            }
+
+            case 26:
+            {
+                System.out.println("GRE Operation");
+
+                int operands[] = interpretF1Format();
+
+                this.condBit= operands[0] >= operands[1];
+
+                break;
+            }
+
+            case 27:
+            {
+                System.out.println("EQ Operation");
+
+                int operands[] = interpretF1Format();
+
+                this.condBit= operands[0] == operands[1];
+
+                break;
+            }
+            case 28:
+            {
+                System.out.println("NEQ Operation");
+
+                int operands[] = interpretF1Format();
+
+
+                this.condBit= operands[0] != operands[1];
+
+
+                break;
+            }
+            case 29:
+            {
+                System.out.println("NOP Operation");
+
+                // int operands[] = interpretF1Format();
+
+
+                break;
+            }
+
+            case 30:
+            {
+                System.out.println("Stop Operation");
+
+                // int operands[] = interpretF1Format();
+
+                this.stop=true;
+
+                break;
+            }
+
         }
-         
-         case 25:
-        {
-            System.out.println("GR Operation");
+    }
 
-            int operands[] = interpretF1Format();
-
-            this.condBit= operands[0] > operands[1];            
-
-            break;
-        }
-         
-         case 26:
-        {
-            System.out.println("GRE Operation");
-
-            int operands[] = interpretF1Format();
-
-              this.condBit= operands[0] >= operands[1];
-
-            break;
-        }
-        
-          case 27:
-        {
-            System.out.println("EQ Operation");
-
-            int operands[] = interpretF1Format();
-
-            this.condBit= operands[0] == operands[1];
-
-            break;
-        }
-          case 28:
-        {
-            System.out.println("NEQ Operation");
-
-            int operands[] = interpretF1Format();
-
-            
-            this.condBit= operands[0] != operands[1];
-            
-
-            break;
-        }
-         case 29:
-        {
-            System.out.println("NOP Operation"); 
-           
-           // int operands[] = interpretF1Format();
-
-
-            break;
-        }
-         
-         case 30:
-        {
-            System.out.println("Stop Operation");
-
-           // int operands[] = interpretF1Format();
-            
-            this.stop=true;
-
-            break;
-        }
-        
-		}
-	}
-
-	public void loadRegister(File file){
-		CodeReader codereader = new CodeReader(file);
-		codereader.extractCode();
-		mem = new Memory(codereader.getMemoryMirror());
+    public void loadRegister(File file){
+        CodeReader codereader = new CodeReader(file);
+        codereader.extractCode();
+        mem = new Memory(codereader.getMemoryMirror());
 
 
     }
@@ -370,7 +369,7 @@ public class Simulator {
         int instruction = cpu.get("IR");
 
         //Gather the destination
-   //     operands[0] = (instruction >> 8) & 0x7; //Destination
+        //     operands[0] = (instruction >> 8) & 0x7; //Destination
 
         int ra = (instruction >> 8) & 0x7; //Value location
         int rb = (instruction >> 5) & 0x7; //Value location
@@ -388,8 +387,8 @@ public class Simulator {
         return operands;
 
     }
-    
-        public int[] interpretF2Format()
+
+    public int[] interpretF2Format()
     {
         //Interpret F1 Format
         int operands[] = new int[2];
@@ -397,7 +396,7 @@ public class Simulator {
         int instruction = cpu.get("IR");
 
         //Gather the destination
-   //     operands[0] = (instruction >> 8) & 0x7; //Destination
+        //     operands[0] = (instruction >> 8) & 0x7; //Destination
 
         int ra = (instruction >> 8) & 0x7; //Value location
         int addr = instruction & 0xFF; //Value location
@@ -407,13 +406,13 @@ public class Simulator {
 
         System.out.println("Ra: " + operands[0]);
         System.out.println("const/addr: " + operands[1]);
-     
+
 
 
         return operands;
 
     }
-            public int interpretF3Format()
+    public int interpretF3Format()
     {
         //Interpret F1 Format
         int operand ;
@@ -421,15 +420,15 @@ public class Simulator {
         int instruction = cpu.get("IR");
 
         //Gather the destination
-   //     operands[0] = (instruction >> 8) & 0x7; //Destination
+        //     operands[0] = (instruction >> 8) & 0x7; //Destination
 
-        
+
         int addr = instruction & 0x7FF; //Value location
 
         operand = cpu.get(String.valueOf(addr)); //Value in Rb
 
         System.out.println("const/addr: " + operand);
-     
+
 
 
         return operand;
@@ -449,19 +448,19 @@ public class Simulator {
 
     //String getters
     public String getMemoryContents(){
-    	String result="";
-    	for(short i=0;i<mem.getMemorySize();){
+        String result="";
+        for(short i=0;i<mem.getMemorySize();){
 
             String location = String.format("%04d", i);
             String content = String.format("%02d02d", mem.get(i), mem.get(i+1) );
             result = result.concat(location+": " + content + " \n");
             i+=2;
-    	}
-    	return result;
+        }
+        return result;
     }
 
     public String getRegisterContents(String reg){
-    	return ""+cpu.get(reg);
+        return ""+cpu.get(reg);
     }
 
     public String getKeyboard(){return ""+mem.get(128);}
@@ -469,7 +468,7 @@ public class Simulator {
     public String getParOut(){return ""+mem.get(132);}
 
     public String getHex(){
-    	return "testHex";
+        return "testHex";
     }
 
     /**
@@ -497,16 +496,16 @@ public class Simulator {
 
     public String getAddressBus(){return ""+addressBus;}
     public String getControlBus(){
-    	if (controlBus) return "1";
-    	else return "0";
+        if (controlBus) return "1";
+        else return "0";
     }
 
 
 
     public String getDataBus(){return ""+dataBus;}
     public String getCondBit(){
-    	if (condBit) return "1";
-    	else return "0";}
+        if (condBit) return "1";
+        else return "0";}
 
 
 }

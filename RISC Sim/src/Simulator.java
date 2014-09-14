@@ -1,3 +1,5 @@
+package src;
+
 import java.io.File;
 
 /* CPU
@@ -33,14 +35,31 @@ public class Simulator {
 	int dataBus; //data that is read or written
 	boolean controlBus; //true = 1 = write
 	boolean condBit; //altered by arithmetic/logic instructions
-    int fetch_count = 0;
-    boolean fetch_done = false;
+        int fetch_count = 0;
+        boolean fetch_done = false;
+        boolean stop=false;
 
 
 
 	public Simulator(){
 		cpu = new CPU();
 	}
+        
+        public void cycle(){
+            do{
+                fetch();
+                decExe();
+                
+            }while(stop=false);
+            
+            //Stop cycle 
+        }
+        
+        public void cycleStep(){
+                
+                fetch();
+                decExe();
+        }
 
 	public void fetch()
     {
@@ -164,6 +183,7 @@ public class Simulator {
             int operands[] = interpretF1Format();
 
             cpu.set(operands[1] << operands[2], String.valueOf(operands[0]));
+            
 
             break;
         }
@@ -192,9 +212,135 @@ public class Simulator {
 
             break;
         }
-		//BRINCOS Y CONTROL
-		case 20:
-			break;
+	//BRINCOS Y CONTROL
+	 case 20:
+        {
+            System.out.println("JMPR Operation");
+
+            int operands[] = interpretF1Format();
+
+            cpu.set(operands[0], "PC");
+            
+
+            break;
+        }
+          case 21:
+        {
+            System.out.println("JMPA Operation");
+
+            int addr = interpretF3Format();
+
+            cpu.set(addr, "PC");            
+
+            break;
+        }
+        
+           case 22:
+        {
+            System.out.println("JCR Operation");
+
+            int operands[] = interpretF1Format();
+            
+            if(this.condBit ==true){
+                 cpu.set(operands[0], "PC");
+            }
+
+            break;
+        }
+        
+            case 23:
+        {
+            System.out.println("JCA Operation");
+
+            int addr = interpretF3Format();
+
+            if(this.condBit ==true){
+                cpu.set(addr, "PC");
+            }
+            break;
+        }
+            
+         case 24:
+        {
+            System.out.println("LOOP Operation");
+
+            int operands[] = interpretF2Format();
+            int loop= operands[0];
+           
+            while(loop!=0){
+                loop--;
+                cpu.set(loop, String.valueOf(operands[0]));
+            }
+            cpu.set(operands[1], "PC");
+
+            break;
+        }
+         
+         case 25:
+        {
+            System.out.println("GR Operation");
+
+            int operands[] = interpretF1Format();
+
+            this.condBit= operands[0] > operands[1];            
+
+            break;
+        }
+         
+         case 26:
+        {
+            System.out.println("GRE Operation");
+
+            int operands[] = interpretF1Format();
+
+              this.condBit= operands[0] >= operands[1];
+
+            break;
+        }
+        
+          case 27:
+        {
+            System.out.println("EQ Operation");
+
+            int operands[] = interpretF1Format();
+
+            this.condBit= operands[0] == operands[1];
+
+            break;
+        }
+          case 28:
+        {
+            System.out.println("NEQ Operation");
+
+            int operands[] = interpretF1Format();
+
+            
+            this.condBit= operands[0] != operands[1];
+            
+
+            break;
+        }
+         case 29:
+        {
+            System.out.println("NOP Operation"); 
+           
+           // int operands[] = interpretF1Format();
+
+
+            break;
+        }
+         
+         case 30:
+        {
+            System.out.println("Stop Operation");
+
+           // int operands[] = interpretF1Format();
+            
+            this.stop=true;
+
+            break;
+        }
+        
 		}
 	}
 
@@ -224,11 +370,13 @@ public class Simulator {
         int instruction = cpu.get("IR");
 
         //Gather the destination
-        operands[0] = (instruction >> 8) & 0x7; //Destination
+   //     operands[0] = (instruction >> 8) & 0x7; //Destination
 
+        int ra = (instruction >> 8) & 0x7; //Value location
         int rb = (instruction >> 5) & 0x7; //Value location
         int rc = (instruction >> 2) & 0x7; //Value location
 
+        operands[0] = cpu.get(String.valueOf(ra)); //Value in Rb
         operands[1] = cpu.get(String.valueOf(rb)); //Value in Rb
         operands[2] = cpu.get(String.valueOf(rc)); //Value in Rc
 
@@ -238,6 +386,53 @@ public class Simulator {
 
 
         return operands;
+
+    }
+    
+        public int[] interpretF2Format()
+    {
+        //Interpret F1 Format
+        int operands[] = new int[2];
+        //Pull instruction
+        int instruction = cpu.get("IR");
+
+        //Gather the destination
+   //     operands[0] = (instruction >> 8) & 0x7; //Destination
+
+        int ra = (instruction >> 8) & 0x7; //Value location
+        int addr = instruction & 0xFF; //Value location
+
+        operands[0] = cpu.get(String.valueOf(ra)); //Value in Rb
+        operands[1] = cpu.get(String.valueOf(addr)); //Value in Rb
+
+        System.out.println("Ra: " + operands[0]);
+        System.out.println("const/addr: " + operands[1]);
+     
+
+
+        return operands;
+
+    }
+            public int interpretF3Format()
+    {
+        //Interpret F1 Format
+        int operand ;
+        //Pull instruction
+        int instruction = cpu.get("IR");
+
+        //Gather the destination
+   //     operands[0] = (instruction >> 8) & 0x7; //Destination
+
+        
+        int addr = instruction & 0x7FF; //Value location
+
+        operand = cpu.get(String.valueOf(addr)); //Value in Rb
+
+        System.out.println("const/addr: " + operand);
+     
+
+
+        return operand;
 
     }
 

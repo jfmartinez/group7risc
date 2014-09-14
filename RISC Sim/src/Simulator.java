@@ -231,10 +231,12 @@ public class Simulator {
 		}
 	}
 	
-	public void loadRegister(File file){
+	public void loadMemory(File file){
 		CodeReader codereader = new CodeReader(file);
 		codereader.extractCode();
-		mem = new Memory(codereader.getMemoryMirror());			
+		mem = new Memory(codereader.getMemoryMirror());
+		int test = Integer.parseInt("00FF",16);
+		mem.set(test, 140);
 	}
 	
     public void setMemory(Memory new_mem)

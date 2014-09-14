@@ -1,4 +1,5 @@
 
+import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -28,7 +29,7 @@ public class CpuUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        jFileChooser1 = new javax.swing.JFileChooser();
+        jFileChooser1 = new JFileChooser();
         pcLabel = new javax.swing.JLabel();
         pcField = new javax.swing.JTextField();
         irField = new javax.swing.JTextField();
@@ -129,6 +130,14 @@ public class CpuUI extends javax.swing.JFrame {
         
         jMenu1.add(jMenuItem6);
         jMenuItem6.setText("Step");
+        jMenuItem6.addActionListener(new ActionListener(){
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                simulator.stepExecution();
+                setFieldText();
+
+            }
+        });
 
 
         
@@ -439,7 +448,7 @@ public class CpuUI extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify                     
-    private javax.swing.JFileChooser jFileChooser1;
+    private JFileChooser jFileChooser1;
     private javax.swing.JLabel pcLabel; //PC
     private javax.swing.JLabel r7Label; //R7
     private javax.swing.JLabel keyboardLabel; //Keybo

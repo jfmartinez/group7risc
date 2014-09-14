@@ -15,7 +15,7 @@ public class CodeReader {
     {
         programFile = new File(filePath);
         System.out.println("Path: " + programFile.getAbsolutePath());
-        memoryMirror = new int[2048];
+        memoryMirror = new int[1024];
 
         String number = "000A";
         System.out.println(Long.parseLong(number, 16));
@@ -43,9 +43,9 @@ public class CodeReader {
                 //Extract code
 
                 String address = line.substring(0,4);
-                System.out.println("Address: " + address);
+//                System.out.println("Address: " + address);
                 String data = line.substring(6,10);
-                System.out.println("Data: " + data);
+//                System.out.println("Data: " + data);
 
                 long address_number = Long.parseLong(address, 16);
 
@@ -59,11 +59,11 @@ public class CodeReader {
 
 
             }
-
-            for(int i = 0; i < memoryMirror.length; i++)
-            {
-                System.out.println("Content: " + memoryMirror[i]);
-            }
+//
+//            for(int i = 0; i < memoryMirror.length; i++)
+//            {
+//                System.out.println("Content: " + memoryMirror[i]);
+//            }
 
             reader.close();
         }

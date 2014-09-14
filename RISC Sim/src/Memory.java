@@ -21,16 +21,13 @@ public class Memory{
             sysMem = new_mem;
         }
 
+        
+        
 		//methods
 		public int get(int i){
 			return sysMem[i];
 		}
-		
-		/**
-		 * 
-		 * @param newValue value to store in memory
-		 * @param i cell address
-		 */
+			
 		public void set(int newValue, int i){
 
 //            if(checkAccess(i))

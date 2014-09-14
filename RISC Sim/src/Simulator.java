@@ -239,14 +239,9 @@ public class Simulator {
 
     }
 
-    //I/O Methods
-
     //Keyboard input
-    public void inputKeyboad(String input)
-    {
-
+    public void inputKeyboard(String input){
         int hexInput = Integer.valueOf(input, 16);
-
         mem.set(hexInput, 128);
     }
 

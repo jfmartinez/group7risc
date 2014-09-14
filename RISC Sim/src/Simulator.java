@@ -120,6 +120,7 @@ public class Simulator {
                 System.out.println("ST");
 
                 int ops[] = interpretF2Format();
+                dataBus = ops[0];
                 mem.set(cpu.get(""+ops[0]), ops[1]);
                 break;
             }
@@ -581,7 +582,7 @@ public class Simulator {
     }
 
 
-    public String getAddressBus(){return ""+addressBus;}
+    public String getAddressBus(){return hexString(addressBus);}
     public String getControlBus(){
         if (controlBus) return "1";
         else return "0";
@@ -589,7 +590,7 @@ public class Simulator {
 
 
 
-    public String getDataBus(){return ""+dataBus;}
+    public String getDataBus(){return hexString(dataBus);}
     public String getCondBit(){
         if (condBit) return "1";
         else return "0";}

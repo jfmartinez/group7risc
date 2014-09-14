@@ -70,19 +70,52 @@ public class Simulator {
     }
 	
 	public void decExe(){
-		// TODO IMPLEMENT ALL METHODS 
-		//Create a method for every instruction?
-		//Do the implementation of every instruction inside the switch?
 		switch (cpu.getOpCode()){
 		//MOVIMIENTO DE DATOS
-		case 0:
-			//call method for 0
-
-			break;
+		case 0:{//Load data in memory address to register\
+			int ops[] = interpretF2Format();
+			cpu.set(mem.get(ops[1]), ops[0]+"");
+			break;}
+		case 1:{//Load constant to register
+			int ops[]=interpretF2Format();
+			cpu.set(ops[1], ops[0]+"");
+			break;}
+		case 2:{//LDACC const {F3}
+			cpu.set(interpretF3Format(), "1");
+			break;}
+		case 3:{//ST mem,Ra {F2}
+			int ops[] = interpretF2Format();
+			mem.set(cpu.get(""+ops[0]), ops[1]);
+			break;}
+		case 4:{//STACC mem {F3}
+			mem.set(cpu.get("1"), interpretF3Format());
+			break;}
+		case 5:{//LDR Ra,Rb{F1}		R[Ra] <- mem[R[Rb]]
+			int ops[] = interpretF1Format();
+			cpu.set(mem.get(cpu.get(""+ops[1])), ""+ops[0]);
+			break;}
+		case 6:{//STR Ra,Rb {F1}	R[Rb] <- mem[R[Ra]] 
+			int ops[]=interpretF1Format();
+			int address = cpu.get(""+ops[0]);
+			int valueInMem = mem.get(address);
+			cpu.set(valueInMem, ""+ops[1]);
+			break;}
 		//ARITMETICA
-		case 7:
-			break;
-			 //LOGICA Y DESPLAZAMIENTO
+		case 7:{ //ADD Ra,Rb,Rc {F1}		R[ra]<- R[rb]+R[rc]
+			int ops[] = interpretF1Format();
+			
+			break;}
+		case 8:{ //SUB Ra,Rb,Rc {F1}  R[ra]<- R[rb]-R[rc]
+			int ops[] = interpretF1Format();
+			break;}
+		case 9:{//ADI Ra, cons {F2}  R[1]<= R[ra]+cons
+			int ops[] = interpretF2Format();
+			break;}
+		case 10:{//SBI Ra,  cons {F2}  R[1]<= R[ra]-cons
+			int ops[] = interpretF2Format();
+			break;}
+			
+		//LOGICA Y DESPLAZAMIENTO
         case 11: {
             System.out.println("AND Operation");
             //Interpret F1 Format
@@ -211,9 +244,17 @@ public class Simulator {
 
     public String hexString(int i)
     {
-        return Integer.toString(i, 16);
+    	String result = Integer.toString(i,16);
+    	while (result.length()<4){
+    		result = "0"+result;
+    	}
+        return result;
     }
 
+    /**
+     * | Ra | Rb | Rc |
+     * @return array with 3 register indexes
+     */
     public int[] interpretF1Format()
     {
         //Interpret F1 Format
@@ -238,6 +279,25 @@ public class Simulator {
         return operands;
 
     }
+    
+    /**
+     * | register index | address/constant |
+     * 
+     * @return an array with register index and a constant or an address
+     */
+    private int[] interpretF2Format(){
+    	int operands[]=new int[2];
+    	int instruction = cpu.get("IR");
+    	
+    	//bit-shift instruction if necessary and do "logical AND" to obtain necessary bits.
+    	operands[0] = instruction & 0xFF;
+    	operands[1] = (instruction>>8) & 0x7;
+    	return operands;
+    }
+    
+    private int interpretF3Format(){
+    	return cpu.get("IR") & 0x2FF;
+    }
 
     //Keyboard input
     public void inputKeyboard(String input){
@@ -248,8 +308,11 @@ public class Simulator {
     //String getters
     public String getMemoryContents(){
     	String result="";
-    	for(int i=0;i<mem.getMemorySize();i++){
-    		result = result.concat(i+": "+hexString(mem.get(i))+"\n");
+    	for(int i=0;i<mem.getMemorySize();i=i+2){
+    		String hexString = hexString(mem.get(i));
+    		result = result.concat(i+": "+hexString.substring(0,2)+"\n");
+    		int j=i+1;
+    		result = result.concat(j + ": "+hexString.substring(2,4)+"\n");
     	}
     	return result;
     }
@@ -265,7 +328,16 @@ public class Simulator {
     	return "testHex";
     }
     public String getAscii(){
-    	return "testAscii";
+    	String display = "";
+    	int i = 0;
+    	while(i < 15){
+	    	int byteOne = mem.get(140 + i); //Retrieve byte
+	    	char c1 = (char) byteOne; //int to ASCII
+	    	display += c1;
+	    	i++;
+	    }
+	    	System.out.println(display);
+	    	return display;
     }
 
     public String getAddressBus(){return ""+addressBus;}

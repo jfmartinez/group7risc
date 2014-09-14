@@ -253,7 +253,19 @@ public class CpuUI extends javax.swing.JFrame {
 
                 setFieldText();
             }
+            
+        
         });
+        
+        executeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulator.Execution();
+                setFieldText();
+            }
+            
+        
+        });
+
 
 
 

@@ -191,6 +191,15 @@ public class CpuUI extends javax.swing.JFrame {
             }
         });
 
+        stepExecuteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulator.stepExecution();
+                setFieldText();
+            }
+        });
+
+
+
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -413,12 +422,8 @@ public class CpuUI extends javax.swing.JFrame {
     }
 
 
-<<<<<<< HEAD
-    // Variables declaration - do not modify                     
-    private JFileChooser jFileChooser1;
-=======
+
     private javax.swing.JFileChooser jFileChooser1;
->>>>>>> 8590b967d70fb01ba6a9d959b206832c7b99b613
     private javax.swing.JLabel pcLabel; //PC
     private javax.swing.JLabel r7Label; //R7
     private javax.swing.JLabel keyboardLabel; //Keybo

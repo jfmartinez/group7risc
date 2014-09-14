@@ -255,8 +255,12 @@ public class Simulator {
     //String getters
     public String getMemoryContents(){
     	String result="";
-    	for(int i=0;i<mem.getMemorySize();i++){
-    		result = result.concat(i+": "+hexString(mem.get(i))+"\n");
+    	for(short i=0;i<mem.getMemorySize();){
+
+            String location = String.format("%04d", i);
+            String content = String.format("%02d02d", mem.get(i), mem.get(i+1) );
+            result = result.concat(location+": " + content + " \n");
+            i+=2;
     	}
     	return result;
     }
@@ -268,6 +272,7 @@ public class Simulator {
     public String getKeyboard(){return ""+mem.get(128);}
     public String getParIn(){return ""+mem.get(130);}
     public String getParOut(){return ""+mem.get(132);}
+
     public String getHex(){
     	return "testHex";
     }

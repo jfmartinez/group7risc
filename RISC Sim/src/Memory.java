@@ -21,8 +21,6 @@ public class Memory{
             sysMem = new_mem;
         }
 
-        
-        
 		//methods
 		public int get(int i){
 			return sysMem[i];

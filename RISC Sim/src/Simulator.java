@@ -81,7 +81,12 @@ public class Simulator {
         decExe();
     }
 
+    public void Execution() {
+        do {
+            stepExecution();
+        }while(this.stop == false);
 
+    }
 
     public void decExe(){
         // TODO IMPLEMENT ALL METHODS
@@ -89,6 +94,7 @@ public class Simulator {
         //Do the implementation of every instruction inside the switch?
         switch (cpu.getOpCode()){
 
+//====================================== MOVIMIENTO DE DATOS ============================================================//
 
             case 0:{//Load data in memory address to register\
 
@@ -139,8 +145,8 @@ public class Simulator {
                 break;}
 
 
-            //ARITMETICA
-            case 7:{ //ADD Ra,Rb,Rc {F1}		R[ra]<- R[rb]+R[rc]
+//================================================ ARITMETICA ============================================================//
+           case 7:{ //ADD Ra,Rb,Rc {F1}		R[ra]<- R[rb]+R[rc]
                 int ops[] = interpretF1Format();
 
                 break;}
@@ -154,7 +160,7 @@ public class Simulator {
                 int ops[] = interpretF2Format();
                 break;}
 
-            //LOGICA Y DESPLAZAMIENTO
+//======================================  LOGICA Y DESPLAZAMIENTO ============================================================//
             case 11: {
                 System.out.println("AND Operation");
                 //Interpret F1 Format
@@ -200,7 +206,7 @@ public class Simulator {
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
 
-                cpu.set(~rb_value, String.valueOf(operands[0]));
+                cpu.set(~rb_value & 0xFF, String.valueOf(operands[0]));
                 break;
 
             }
@@ -215,7 +221,7 @@ public class Simulator {
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
 
-                cpu.set((~rb_value) +1, String.valueOf(operands[0]));
+                cpu.set((~rb_value & 0xFF) +1, String.valueOf(operands[0]));
                 break;
 
             }
@@ -230,7 +236,7 @@ public class Simulator {
                 int operands[] = interpretF1Format();
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
-                cpu.set(rb_value >> rc_value, String.valueOf(operands[0]));
+                cpu.set((rb_value >> rc_value) & 0xFF, String.valueOf(operands[0]));
 
                 break;
 
@@ -275,14 +281,16 @@ public class Simulator {
                 break;
             }
 
-            //BRINCOS Y CONTROL
+//====================================== BRINCOS Y CONTROL============================================================//
             case 20:
             {
                 System.out.println("JMPR Operation");
 
                 int operands[] = interpretF1Format();
+                int ra_value = cpu.get(String.valueOf(operands[0]));
 
-                cpu.set(operands[0], "PC");
+
+                cpu.set(ra_value, "PC");
 
 
                 break;
@@ -303,9 +311,10 @@ public class Simulator {
                 System.out.println("JCR Operation");
 
                 int operands[] = interpretF1Format();
+                int ra_value = cpu.get(String.valueOf(operands[0]));
 
                 if(this.condBit ==true){
-                    cpu.set(operands[0], "PC");
+                    cpu.set(ra_value, "PC");
                 }
 
                 break;
@@ -344,8 +353,12 @@ public class Simulator {
                 System.out.println("GR Operation");
 
                 int operands[] = interpretF1Format();
+                int ra_value = cpu.get(String.valueOf(operands[0]));
+                int rb_value = cpu.get(String.valueOf(operands[1]));
 
-                this.condBit= operands[0] > operands[1];
+
+                this.condBit= ra_value > rb_value;
+                System.out.println(condBit);
 
                 break;
             }
@@ -355,8 +368,12 @@ public class Simulator {
                 System.out.println("GRE Operation");
 
                 int operands[] = interpretF1Format();
+                int ra_value = cpu.get(String.valueOf(operands[0]));
+                int rb_value = cpu.get(String.valueOf(operands[1]));
 
-                this.condBit= operands[0] >= operands[1];
+
+                this.condBit= ra_value >= rb_value;
+                System.out.println(condBit);
 
                 break;
             }
@@ -366,8 +383,12 @@ public class Simulator {
                 System.out.println("EQ Operation");
 
                 int operands[] = interpretF1Format();
+                int ra_value = cpu.get(String.valueOf(operands[0]));
+                int rb_value = cpu.get(String.valueOf(operands[1]));
 
-                this.condBit= operands[0] == operands[1];
+
+                this.condBit= ra_value == rb_value;
+                System.out.println(condBit);
 
                 break;
             }
@@ -376,9 +397,12 @@ public class Simulator {
                 System.out.println("NEQ Operation");
 
                 int operands[] = interpretF1Format();
+                int ra_value = cpu.get(String.valueOf(operands[0]));
+                int rb_value = cpu.get(String.valueOf(operands[1]));
 
 
-                this.condBit= operands[0] != operands[1];
+                this.condBit= ra_value != rb_value;
+                System.out.println(condBit);
 
 
                 break;
@@ -418,6 +442,7 @@ public class Simulator {
         mem = new_mem;
     }
 
+
     public String hexString(int i)
     {
         String leading_zero = "";
@@ -438,8 +463,6 @@ public class Simulator {
         int instruction = cpu.get("IR");
 
         //Gather the destination
-//        operands[0] = (instruction >> 8) & 0x7; //Destination
-
         int ra = (instruction >> 8) & 0x7; //Value location
         int rb = (instruction >> 5) & 0x7; //Value location
         int rc = (instruction >> 2) & 0x7; //Value location
@@ -489,8 +512,7 @@ public class Simulator {
 
 
 
-    //I/O Methods
-
+    //====================================== I/O Methods ============================================================//
     //Keyboard input
     public void inputKeyboad(String input)
     {
@@ -500,29 +522,6 @@ public class Simulator {
         mem.set(hexInput, 128);
     }
 
-    //Return the memory in an organized format for the GUI
-    public String getMemoryContents(){
-        String result="";
-
-
-        for(int i=0;i<mem.getMemorySize();){
-
-            String location = "";
-            if(i < 0xFF) location = "00" + hexString(i); //Pattern for numbers lower than 0xFF
-            else if(i < 0xFFF) location = "0" + hexString(i);
-            else location = hexString(i);
-
-
-            String content = hexString(mem.get(i)) + "" + hexString(mem.get(i+1));
-            result = result.concat(location+": "+content + "\n");
-            i+=2;
-        }
-        return result;
-    }
-
-    public String getRegisterContents(String reg){
-        return ""+cpu.get(reg);
-    }
 
     public String getKeyboard(){return ""+mem.get(128);}
     public String getParIn(){return ""+mem.get(130);}
@@ -553,6 +552,34 @@ public class Simulator {
 
         return display;
     }
+
+    //====================================== Microprocessor State Getters ============================================================//
+
+
+    //Return the memory in an organized format for the GUI
+    public String getMemoryContents(){
+        String result="";
+
+
+        for(int i=0;i<mem.getMemorySize();){
+
+            String location = "";
+            if(i < 0xFF) location = "00" + hexString(i); //Pattern for numbers lower than 0xFF
+            else if(i < 0xFFF) location = "0" + hexString(i);
+            else location = hexString(i);
+
+
+            String content = hexString(mem.get(i)) + "" + hexString(mem.get(i+1));
+            result = result.concat(location+": "+content + "\n");
+            i+=2;
+        }
+        return result;
+    }
+
+    public String getRegisterContents(String reg){
+        return ""+hexString(cpu.get(reg));
+    }
+
 
     public String getAddressBus(){return ""+addressBus;}
     public String getControlBus(){

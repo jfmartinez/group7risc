@@ -126,7 +126,7 @@ public class CpuGui extends JFrame implements ActionListener{
 
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
 		            File file = fc.getSelectedFile();
-		            simulator.loadRegister(file);
+		            simulator.loadMemory(file);
 		        } else {
 		            System.out.append("Open command cancelled by user.\n");
 		        }

@@ -25,7 +25,12 @@ public class Memory{
 		public int get(int i){
 			return sysMem[i];
 		}
-			
+		
+		/**
+		 * 
+		 * @param newValue value to store in memory
+		 * @param i cell address
+		 */
 		public void set(int newValue, int i){
 
 //            if(checkAccess(i))

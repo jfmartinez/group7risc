@@ -21,7 +21,7 @@ public class CpuUI extends javax.swing.JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
         jFileChooser1 = new JFileChooser();
@@ -103,8 +103,8 @@ public class CpuUI extends javax.swing.JFrame {
         executeButton.setText("Execute");
         stepExecuteButton.setText("Step Execute");
         stopButton.setText("Stop");
-        
-        
+
+
         //Set menu bar and actions menu
         setJMenuBar(jMenuBar1);
         jMenuBar1.add(jMenu1);
@@ -114,7 +114,7 @@ public class CpuUI extends javax.swing.JFrame {
                 jMenu1ActionPerformed(evt);
             }
         });
-        
+
         //Add actions to menu
         jMenu1.add(jMenuItem5);
         jMenuItem5.setText("Load");
@@ -123,7 +123,7 @@ public class CpuUI extends javax.swing.JFrame {
                 jMenuItem5ActionPerformed(evt);
             }
         });
-        
+
         jMenu1.add(jMenuItem2);
         jMenuItem2.setText("Stop");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -131,7 +131,7 @@ public class CpuUI extends javax.swing.JFrame {
                 jMenuItem2ActionPerformed(evt);
             }
         });
-        
+
         jMenu1.add(jMenuItem6);
         jMenuItem6.setText("Step");
         jMenuItem6.addActionListener(new ActionListener(){
@@ -201,7 +201,7 @@ public class CpuUI extends javax.swing.JFrame {
 
             }
         });
-        
+
         keyboardField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 keyboardFieldActionPerformed(evt);
@@ -213,7 +213,7 @@ public class CpuUI extends javax.swing.JFrame {
                 asciiFieldActionPerformed(evt);
             }
         });
-        
+
         loadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadButtonActionPerformed(evt);
@@ -229,10 +229,10 @@ public class CpuUI extends javax.swing.JFrame {
 
                 setFieldText();
             }
-            
-        
+
+
         });
-        
+
         executeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fieldEditReplacer();
@@ -240,8 +240,8 @@ public class CpuUI extends javax.swing.JFrame {
                 simulator.Execution();
                 setFieldText();
             }
-            
-        
+
+
         });
 
 
@@ -392,7 +392,7 @@ public class CpuUI extends javax.swing.JFrame {
 
         pack();
         setVisible(true);
-    }// </editor-fold>                        
+    }// </editor-fold>
 
     private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {
     }                                      

@@ -54,7 +54,7 @@ public class Simulator {
 
         cpu.pushIR(dataBus);
 
-        cpu.set(addressBus + 1, "PC");
+        cpu.set((addressBus + 1)%mem.getMemorySize(), "PC");
 
         if(fetch_count == 1) //Done fetching
         {
@@ -107,48 +107,28 @@ public class Simulator {
 //====================================== MOVIMIENTO DE DATOS ============================================================//
 
             case 0:{//Load data in memory address to register\
-
-                System.out.println("LOAD");
                 int ops[] = interpretF2Format();
                 cpu.set(mem.get(ops[1]), ops[0]+"");
-                break;
-            }
+                break;}
             case 1:{//Load constant to register
-                System.out.println("LOAD Constant");
-
                 int ops[]=interpretF2Format();
                 cpu.set(ops[1], ops[0]+"");
-                break;
-            }
+                break;}
             case 2:{//LDACC const {F3}
-                System.out.println("LOAD Accumulator");
-
                 cpu.set(interpretF3Format(), "1");
-                break;
-            }
+                break;}
             case 3:{//ST mem,Ra {F2}
-                System.out.println("ST");
-
                 int ops[] = interpretF2Format();
-                dataBus = ops[0];
                 mem.set(cpu.get(""+ops[0]), ops[1]);
-                break;
-            }
+                break;}
             case 4:{//STACC mem {F3}
-                System.out.println("STACC");
-
                 mem.set(cpu.get("1"), interpretF3Format());
-                break;
-            }
+                break;}
             case 5:{//LDR Ra,Rb{F1}		R[Ra] <- mem[R[Rb]]
-                System.out.println("LDR");
-
                 int ops[] = interpretF1Format();
                 cpu.set(mem.get(cpu.get(""+ops[1])), ""+ops[0]);
-                break;
-            }
+                break;}
             case 6:{//STR Ra,Rb {F1}	R[Rb] <- mem[R[Ra]]
-                System.out.println("STR");
                 int ops[]=interpretF1Format();
                 int address = cpu.get(""+ops[0]);
                 int valueInMem = mem.get(address);
@@ -157,18 +137,70 @@ public class Simulator {
 
 
 //================================================ ARITMETICA ============================================================//
-           case 7:{ //ADD Ra,Rb,Rc {F1}		R[ra]<- R[rb]+R[rc]
+            //if ( msbit(opa) == msbit(opb) ) && ( msbit(res) != msbit(opb) ) signed overflow, else no signed overflow
+            case 7:{ //ADD Ra,Rb,Rc {F1}		R[ra]<- R[rb]+R[rc]
+                //Registers hold numbers from 0-255. From 0-127, all numbers positive, okay.
+                //From 128-255, they represent negative numbers, they have a 256 bias.
                 int ops[] = interpretF1Format();
+                int opa,opb;
+                if (cpu.get(""+ops[1])>127) opa=cpu.get(""+ops[1])-256;
+                else opa=cpu.get(""+ops[1]);
 
+                if (cpu.get(""+ops[2])>127) opb=cpu.get(""+ops[2])-256;
+                else opb=cpu.get(""+ops[2]);
+
+                int toSet = opa+opb;
+                if (toSet<0) {condBit=true; toSet+=256;}
+
+                cpu.set(toSet,""+ops[0]);
                 break;}
             case 8:{ //SUB Ra,Rb,Rc {F1}  R[ra]<- R[rb]-R[rc]
+                //Two's complement subtraction a-b is actually a+(-b)+1
+                //a recieves same treatment as case 7 (bias -256 is >127)
+                //b must be negative. To do so,
                 int ops[] = interpretF1Format();
+                int opa,opb;
+                if (cpu.get(""+ops[1])>127) opa=cpu.get(""+ops[1])-256;
+                else opa=cpu.get(""+ops[1]);
+
+                if (cpu.get(""+ops[2])>127) opb=-(cpu.get(""+ops[2])-256);
+                else opb=-cpu.get(""+ops[2]);
+
+                int toSet = opa+opb;
+                if (toSet<0) {condBit=true; toSet+=256;}
+
+                cpu.set(toSet,""+ops[0]);
                 break;}
             case 9:{//ADI Ra, cons {F2}  R[1]<= R[ra]+cons
                 int ops[] = interpretF2Format();
+
+                int opa,opb;
+                if (cpu.get(""+ops[0])>127) opa=cpu.get(""+ops[1])-256;
+                else opa=cpu.get(""+ops[0]);
+
+                if (ops[1]>127) opb=(ops[1]-256);
+                else opb=ops[1];
+
+                int toSet = opa+opb;
+                if (toSet<0) {condBit=true; toSet+=256;}
+
+                cpu.set(toSet,"1");
+
                 break;}
             case 10:{//SBI Ra,  cons {F2}  R[1]<= R[ra]-cons
                 int ops[] = interpretF2Format();
+
+                int opa,opb;
+                if (cpu.get(""+ops[0])>127) opa=cpu.get(""+ops[0])-256;
+                else opa=cpu.get(""+ops[0]);
+
+                if (ops[1]>127) opb=-(ops[1]-256);
+                else opb=-ops[1];
+
+                int toSet = opa+opb+1;
+                if (toSet<0) {condBit=true; toSet+=256;}
+
+                cpu.set(toSet,"1");
                 break;}
 
 //======================================  LOGICA Y DESPLAZAMIENTO ============================================================//
@@ -518,6 +550,8 @@ public class Simulator {
         return operands;
 
     }
+
+
     public int interpretF3Format()
     {
         //Interpret F3 Format
@@ -558,7 +592,7 @@ public class Simulator {
     }
 
     //Read from the parallel output
-    public String getParOut(){return ""+mem.get(132);}
+    public String getParOut(){return hexString(mem.get(132));}
 
 
     public String getHex(){

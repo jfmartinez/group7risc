@@ -1,7 +1,7 @@
 
 import java.io.*;
 /**
- * Created by joframart on 9/6/14.
+ * @author Jose F. Martinez Rivera
  */
 public class CodeReader {
 
@@ -40,7 +40,6 @@ public class CodeReader {
                 String address = line.substring(0,4);
 //                System.out.println("Address: " + address);
                 String data = line.substring(6,10);
-                System.out.println("Data: " + data);
 
                 long address_number = Long.parseLong(address, 16);
 
@@ -70,14 +69,13 @@ public class CodeReader {
         try{
             StringReader textarea = new StringReader(memoryArea);
             BufferedReader reader = new BufferedReader(textarea);
-            System.out.println(memoryArea);
             String line = null;
 
             while((line = reader.readLine())!= null)
             {
                 //Extract code
-                System.out.println("Extracting code");
-                System.out.println(line);
+//                System.out.println("Extracting code");
+//                System.out.println(line);
 
                 String address = line.substring(0,4);
 

@@ -455,7 +455,7 @@ public class CpuUI extends javax.swing.JFrame {
     	irField.setText(simulator.getRegisterContents("IR"));
     	pcField.setText(simulator.getRegisterContents("PC"));
     	
-    	keyboardField.setText(simulator.getKeyboard());
+//    	keyboardField.setText(simulator.getKeyboard());
     	parInField.setText(simulator.getParIn());
     	parOutField.setText(simulator.getParOut());
     	asciiField.setText(simulator.getAscii());
@@ -481,7 +481,16 @@ public class CpuUI extends javax.swing.JFrame {
         simulator.editRegisters("PC", Integer.valueOf(pcField.getText(), 16));
         simulator.editRegisters("IR", Integer.valueOf(irField.getText(), 16));
 
+
         simulator.memoryCopy(memoryArea.getText());
+
+        System.out.println(keyboardField.getText());
+
+        simulator.inputKeyboad(keyboardField.getText());
+
+
+
+
     }
 
 

@@ -41,13 +41,16 @@ public class Memory{
 
 
         private boolean checkAccess(int address_access){
+
             if(address_access == keyboard_location) return false;
 
-            if(address_access == parallel_in || address_access == parallel_out) return false;
+            if(address_access == parallel_in) return false;
 
-            if(address_access >= hex_display_min && address_access <= hex_display_max) return false;
+            if(address_access == parallel_out) return true;
 
-            if(address_access >= ascii_display && address_access <= ascii_display_final) return false;
+            if(address_access >= hex_display_min && address_access <= hex_display_max) return true;
+
+            if(address_access >= ascii_display && address_access <= ascii_display_final) return true;
 
             else
                 return true;

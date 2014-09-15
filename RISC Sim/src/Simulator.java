@@ -1,6 +1,7 @@
 import java.io.File;
 
-/* CPU
+/** Simulator class represents the state of the system
+ * CPU
  * 8 8-bit general purpose registers (R0 always 0, R1 an accumulator)
  * 
  * 11-bit Program Counter
@@ -23,6 +24,8 @@ import java.io.File;
  * First instruction executed is in address 0 (RESET Vector = 0)
  * Display shows 8 bits (in hex)
  * Arithmetic operations use 2's complement
+ *
+ * @author Jose F. Martinez Rivera, Luis Murphy, Jose A. Rodriguez Cartagena
  */
 public class Simulator {
 
@@ -36,8 +39,6 @@ public class Simulator {
     int fetch_count = 0;
     boolean fetch_done = false;
     boolean stop=false; //Denotes if it has stopped
-
-
 
 
     public Simulator(){
@@ -176,7 +177,7 @@ public class Simulator {
 
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
-                cpu.set(rb_value & rc_value, String.valueOf(operands[0]));
+                cpu.set((rb_value & rc_value) & 0xFF, String.valueOf(operands[0]));
 
                 break;
             }
@@ -187,7 +188,7 @@ public class Simulator {
                 int operands[] = interpretF1Format();
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
-                cpu.set(rb_value | rc_value, String.valueOf(operands[0]));
+                cpu.set((rb_value | rc_value) & 0xFF, String.valueOf(operands[0]));
 
                 break;
 
@@ -199,7 +200,7 @@ public class Simulator {
                 int operands[] = interpretF1Format();
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
-                cpu.set(rb_value ^ rc_value, String.valueOf(operands[0]));
+                cpu.set((rb_value ^ rc_value) & 0xFF, String.valueOf(operands[0]));
 
                 break;
             }
@@ -229,7 +230,7 @@ public class Simulator {
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
 
-                cpu.set((~rb_value & 0xFF) +1, String.valueOf(operands[0]));
+                cpu.set(((~rb_value & 0xFF) +1) & 0xFF, String.valueOf(operands[0]));
                 break;
 
             }
@@ -244,7 +245,10 @@ public class Simulator {
                 int operands[] = interpretF1Format();
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
-                cpu.set((rb_value >> rc_value) & 0xFF, String.valueOf(operands[0]));
+
+                if((rb_value & 0x80) == 1)
+                    rb_value += 0xF00;
+                cpu.set(((rb_value)>> rc_value) & 0x0FF, String.valueOf(operands[0]));
 
                 break;
 
@@ -257,34 +261,38 @@ public class Simulator {
                 int operands[] = interpretF1Format();
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
-                cpu.set(rb_value << rc_value, String.valueOf(operands[0]));
+                cpu.set((rb_value << rc_value) & 0xFF, String.valueOf(operands[0]));
 
                 break;
             }
 
-            //Rotate to Left RTL
+            //Rotate to Left RTR
             case 18:
-            {
-                System.out.println("RTL Operation");
-
-                int operands[] = interpretF1Format();
-                int rb_value = cpu.get(String.valueOf(operands[1]));
-                int rc_value = cpu.get(String.valueOf(operands[2]));
-                cpu.set(Integer.rotateLeft(rb_value, rc_value), String.valueOf(operands[0]));
-
-                break;
-
-            }
-
-            //Rotate to Right RTR
-            case 19:
             {
                 System.out.println("RTR Operation");
 
                 int operands[] = interpretF1Format();
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
-                cpu.set(Integer.rotateRight(rb_value, rc_value), String.valueOf(operands[0]));
+                int value = rb_value >>> rc_value | (rb_value << (Byte.SIZE -rc_value));
+                cpu.set(value & 0xFF, String.valueOf(operands[0]));
+
+
+                break;
+
+            }
+
+            //Rotate to Right RTL
+            case 19:
+            {
+                System.out.println("RTL Operation");
+
+                int operands[] = interpretF1Format();
+                int rb_value = cpu.get(String.valueOf(operands[1]));
+                int rc_value = cpu.get(String.valueOf(operands[2]));
+                int value = ( (rb_value << rc_value) |(rb_value  >> (Byte.SIZE - rc_value))) ;
+
+                cpu.set((int) value & 0xFF, String.valueOf(operands[0]));
 
                 break;
             }
@@ -493,14 +501,13 @@ public class Simulator {
         int instruction = cpu.get("IR");
 
         //bit-shift instruction if necessary and do "logical AND" to obtain necessary bits.
-
+        System.out.println(Integer.toBinaryString(instruction));
         operands[0] = (instruction>>8) & 0x7; //Ra
         operands[1] = instruction & 0xFF; //Address / const
 
 
         System.out.println("Ra: " + operands[0]);
         System.out.println("const/addr: " + operands[1]);
-
 
         return operands;
 
@@ -519,19 +526,35 @@ public class Simulator {
 
 
     //====================================== I/O Methods ============================================================//
+
     //Keyboard input
     public void inputKeyboad(String input)
     {
+        if(input.equalsIgnoreCase("")) return;
+        else {
+            int hexInput = Integer.valueOf(input, 16);
+            System.out.println("Hex Input: " + hexInput);
+            mem.set(hexInput & 0xFF, 128);
+        }
 
-        int hexInput = Integer.valueOf(input, 16);
-
-        mem.set(hexInput, 128);
     }
 
 
-    public String getKeyboard(){return ""+mem.get(128);}
-    public String getParIn(){return ""+mem.get(130);}
+    //Input parallel in into memory
+    public void getParIn(String parallel_in){
+
+        try {
+            int par_in = Integer.parseInt(parallel_in, 16) ;
+            mem.set(par_in & 0xFF, 130);
+        } catch(NumberFormatException e) {
+            //Do Nothing
+        }
+    }
+
+    //Read from the parallel output
     public String getParOut(){return ""+mem.get(132);}
+
+
     public String getHex(){
         return "testHex";
     }

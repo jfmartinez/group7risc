@@ -30,8 +30,7 @@ public class Memory{
 			
 		public void set(int newValue, int i){
 
-//            if(checkAccess(i))
-              System.out.println("Memory Address: " + i + ", Value: " + newValue);
+            if(checkAccess(i))
               sysMem[i] = newValue;
 		}
 		

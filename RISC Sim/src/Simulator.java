@@ -175,7 +175,7 @@ public class Simulator {
                 int ops[] = interpretF2Format();
 
                 int opa,opb;
-                if (cpu.get(""+ops[0])>127) opa=cpu.get(""+ops[1])-256;
+                if (cpu.get(""+ops[0])>127) opa=cpu.get(""+ops[0])-256;
                 else opa=cpu.get(""+ops[0]);
 
                 if (ops[1]>127) opb=(ops[1]-256);
@@ -197,7 +197,7 @@ public class Simulator {
                 if (ops[1]>127) opb=-(ops[1]-256);
                 else opb=-ops[1];
 
-                int toSet = opa+opb+1;
+                int toSet = opa+opb;
                 if (toSet<0) {condBit=true; toSet+=256;}
 
                 cpu.set(toSet,"1");
@@ -280,7 +280,7 @@ public class Simulator {
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
 
-                byte value = (byte) (rb_value >> rc_value);
+                int value =  (int) ((byte)rb_value >>> rc_value) & 0xff;
                 cpu.set((int) value , String.valueOf(operands[0]));
 
                 break;
@@ -523,11 +523,6 @@ public class Simulator {
         operands[1] = rb;
         operands[2] = rc;
 
-        System.out.println("Ra: " + operands[0]);
-        System.out.println("Rb: " + operands[1]);
-        System.out.println("Rc: " + operands[2]);
-
-
         return operands;
 
     }
@@ -538,14 +533,8 @@ public class Simulator {
         int operands[]=new int[2];
         int instruction = cpu.get("IR");
 
-        //bit-shift instruction if necessary and do "logical AND" to obtain necessary bits.
-        System.out.println(Integer.toBinaryString(instruction));
         operands[0] = (instruction>>8) & 0x7; //Ra
         operands[1] = instruction & 0xFF; //Address / const
-
-
-        System.out.println("Ra: " + operands[0]);
-        System.out.println("const/addr: " + operands[1]);
 
         return operands;
 
@@ -573,7 +562,6 @@ public class Simulator {
         if(input.equalsIgnoreCase("")) return;
         else {
             int hexInput = Integer.valueOf(input, 16);
-            System.out.println("Hex Input: " + hexInput);
             mem.set(hexInput & 0xFF, 128);
         }
 
@@ -581,7 +569,7 @@ public class Simulator {
 
 
     //Input parallel in into memory
-    public void getParIn(String parallel_in){
+    public void setParIn(String parallel_in){
 
         try {
             int par_in = Integer.parseInt(parallel_in, 16) ;
@@ -618,7 +606,6 @@ public class Simulator {
             display += c1;
             i++;
         }
-        System.out.println(display);
 
         return display;
     }

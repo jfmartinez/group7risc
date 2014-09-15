@@ -483,9 +483,7 @@ public class CpuUI extends javax.swing.JFrame {
 
 
         simulator.memoryCopy(memoryArea.getText());
-
-        System.out.println(keyboardField.getText());
-
+        simulator.setParIn(this.parInField.getText());
         simulator.inputKeyboad(keyboardField.getText());
 
 

@@ -38,7 +38,6 @@ public class CodeReader {
                 //Extract code
 
                 String address = line.substring(0,4);
-                System.out.println("Address: " + address);
                 String data = line.substring(6,10);
 
                 long address_number = Long.parseLong(address, 16);

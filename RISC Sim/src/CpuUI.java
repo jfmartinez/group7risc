@@ -1,4 +1,5 @@
 
+import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -16,14 +17,13 @@ public class CpuUI extends javax.swing.JFrame {
      * Creates new form CpuUI
      */
     public CpuUI() {
-        initComponents();
+    	initComponents();
     }
 
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        jFileChooser1 = new javax.swing.JFileChooser();
+        jFileChooser1 = new JFileChooser();
         pcLabel = new javax.swing.JLabel();
         pcField = new javax.swing.JTextField();
         irField = new javax.swing.JTextField();
@@ -133,6 +133,14 @@ public class CpuUI extends javax.swing.JFrame {
         
         jMenu1.add(jMenuItem6);
         jMenuItem6.setText("Step");
+        jMenuItem6.addActionListener(new ActionListener(){
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                simulator.stepExecution();
+                setFieldText();
+
+            }
+        });
 
 
 
@@ -142,25 +150,54 @@ public class CpuUI extends javax.swing.JFrame {
 
         pcField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pcFieldActionPerformed(evt);
+
             }
         });
-        
+
+        r0Field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+            }
+        });
         r1Field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                r1FieldActionPerformed(evt);
+
+            }
+        });
+
+        r2Field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+
             }
         });
 
         r3Field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                r3FieldActionPerformed(evt);
+
             }
         });
 
         r4Field.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                r4FieldActionPerformed(evt);
+
+            }
+        });
+
+        r5Field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+            }
+        });
+
+        r6Field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+            }
+        });
+
+        r7Field.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+
             }
         });
         
@@ -181,6 +218,40 @@ public class CpuUI extends javax.swing.JFrame {
                 loadButtonActionPerformed(evt);
             }
         });
+
+        stepExecuteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+               fieldEditReplacer();
+
+                simulator.stepExecution();
+
+                setFieldText();
+            }
+            
+        
+        });
+        
+        executeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fieldEditReplacer();
+
+                simulator.setStop(false);
+                (new Thread(simulator)).start();
+                setFieldText();
+            }
+            
+        
+        });
+        
+        stopButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulator.setStop(true);
+            }
+        });
+
+
+
 
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -390,8 +461,8 @@ public class CpuUI extends javax.swing.JFrame {
     	irField.setText(simulator.getRegisterContents("IR"));
     	pcField.setText(simulator.getRegisterContents("PC"));
     	
-    	keyboardField.setText(simulator.getKeyboard());
-    	parInField.setText(simulator.getParIn());
+//    	keyboardField.setText(simulator.getKeyboard());
+//    	parInField.setText(simulator.getParIn());
     	parOutField.setText(simulator.getParOut());
     	asciiField.setText(simulator.getAscii());
     	hexField.setText(simulator.getHex());
@@ -402,6 +473,32 @@ public class CpuUI extends javax.swing.JFrame {
     	condBitField.setText(simulator.getCondBit());
     	
     }
+
+    private void fieldEditReplacer()
+    {
+        simulator.editRegisters("0", Integer.parseInt(r0Field.getText(), 16));
+        simulator.editRegisters("1", Integer.parseInt(r1Field.getText(), 16));
+        simulator.editRegisters("2", Integer.parseInt(r2Field.getText(), 16));
+        simulator.editRegisters("3", Integer.parseInt(r3Field.getText(), 16));
+        simulator.editRegisters("4", Integer.parseInt(r4Field.getText(), 16));
+        simulator.editRegisters("5", Integer.parseInt(r5Field.getText(), 16));
+        simulator.editRegisters("6", Integer.parseInt(r6Field.getText(), 16));
+        simulator.editRegisters("7", Integer.parseInt(r7Field.getText(), 16));
+        simulator.editRegisters("PC", Integer.parseInt(pcField.getText(), 16));
+        simulator.editRegisters("IR", Integer.parseInt(irField.getText(), 16));
+
+
+        simulator.memoryCopy(memoryArea.getText());
+
+        System.out.println(keyboardField.getText());
+
+        simulator.inputKeyboad(keyboardField.getText());
+
+
+
+
+    }
+
 
 
     private javax.swing.JFileChooser jFileChooser1;

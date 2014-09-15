@@ -88,6 +88,7 @@ public class Simulator {
         }
     }
 
+    //Executes a full Execution cycle until the stop flag is true
     public void Execution() {
         do {
             stepExecution();
@@ -298,6 +299,7 @@ public class Simulator {
             }
 
 //====================================== BRINCOS Y CONTROL============================================================//
+            //JMPR : Places the value of the register given and places it in the program counter to simulate a Jump 
             case 20:
             {
                 System.out.println("JMPR Operation");
@@ -311,6 +313,8 @@ public class Simulator {
 
                 break;
             }
+            
+            //JMPA : Places the address given and places it in the program counter to simulate a Jump 
             case 21:
             {
                 System.out.println("JMPA Operation");
@@ -321,7 +325,8 @@ public class Simulator {
 
                 break;
             }
-
+            //JCR : Places the value of the register given and places it in the program counter to simulate a Jump only
+            // if the condition is true
             case 22:
             {
                 System.out.println("JCR Operation");
@@ -335,7 +340,8 @@ public class Simulator {
 
                 break;
             }
-
+            //JCA : Places the address given and places it in the program counter to simulate a Jump only
+            // if the condition is true
             case 23:
             {
                 System.out.println("JCA Operation");
@@ -347,7 +353,7 @@ public class Simulator {
                 }
                 break;
             }
-
+            // LOOP: The instruction loops until the value of Ra is 0 then it stores the value of Rb in the PC
             case 24:
             {
                 System.out.println("LOOP Operation");
@@ -363,7 +369,7 @@ public class Simulator {
 
                 break;
             }
-
+            // GR: If the value of Ra is greater than the value of Rb the condition will be true, else false
             case 25:
             {
                 System.out.println("GR Operation");
@@ -378,7 +384,7 @@ public class Simulator {
 
                 break;
             }
-
+            // GRE: If the value of Ra is greater than or equal to the value of Rb the condition will be true, else false
             case 26:
             {
                 System.out.println("GRE Operation");
@@ -393,7 +399,8 @@ public class Simulator {
 
                 break;
             }
-
+          
+            // EQ: If the value of Ra is equal to the value of Rb the condition will be true, else false
             case 27:
             {
                 System.out.println("EQ Operation");
@@ -408,6 +415,8 @@ public class Simulator {
 
                 break;
             }
+            
+            // NEQ: If the value of Ra is not equal to the value of Rb the condition will be true, else false
             case 28:
             {
                 System.out.println("NEQ Operation");
@@ -423,21 +432,18 @@ public class Simulator {
 
                 break;
             }
+            // NOP: The instruction does nothing
             case 29:
             {
                 System.out.println("NOP Operation");
 
-                // int operands[] = interpretF1Format();
-
-
+                
                 break;
             }
-
+            // Stop: the stop flag will be true
             case 30:
             {
                 System.out.println("Stop Operation");
-
-                // int operands[] = interpretF1Format();
 
                 this.stop=true;
 

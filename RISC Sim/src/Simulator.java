@@ -441,9 +441,8 @@ public class Simulator {
         CodeReader codereader = new CodeReader(file);
         codereader.extractCode();
         mem = new Memory(codereader.getMemoryMirror());
-        int test = Integer.parseInt("00FF",16);
-        mem.set(test, 140);
     }
+
     public void setMemory(Memory new_mem)
     {
         mem = new_mem;
@@ -453,7 +452,7 @@ public class Simulator {
     public String hexString(int i)
     {
         String leading_zero = "";
-        if(i < 0xF)
+        if(i <= 0xF)
         {
             leading_zero = "0";
         }
@@ -552,6 +551,7 @@ public class Simulator {
 
             char c1 = (char) byteOne; //int to ASCII
 
+
             display += c1;
             i++;
         }
@@ -606,6 +606,13 @@ public class Simulator {
 
 
          cpu.set(value, registerID);
+    }
+
+    public void memoryCopy(String memoryCopy){
+        CodeReader codereader = new CodeReader();
+        codereader.extractCodeString(memoryCopy);
+        mem = new Memory(codereader.getMemoryMirror());
+
     }
 }
 

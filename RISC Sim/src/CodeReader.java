@@ -11,14 +11,9 @@ public class CodeReader {
     private static int[] memoryMirror;
 
 
-    public CodeReader(String filePath)
+    public CodeReader()
     {
-        programFile = new File(filePath);
-        System.out.println("Path: " + programFile.getAbsolutePath());
-        memoryMirror = new int[1024];
 
-        String number = "000A";
-        System.out.println(Long.parseLong(number, 16));
 
     }
     
@@ -45,7 +40,48 @@ public class CodeReader {
                 String address = line.substring(0,4);
 //                System.out.println("Address: " + address);
                 String data = line.substring(6,10);
-//                System.out.println("Data: " + data);
+                System.out.println("Data: " + data);
+
+                long address_number = Long.parseLong(address, 16);
+
+
+                String big_endian_one = data.substring(0,2);
+                String big_endian_two = data.substring(2,4);
+
+
+                memoryMirror[(int)address_number] = (int) Integer.parseInt(big_endian_one, 16);
+                memoryMirror[(int)address_number + 1] = (int) Integer.parseInt(big_endian_two, 16);
+
+
+
+            }
+
+            reader.close();
+        }
+
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    public void extractCodeString(String memoryArea)
+    {
+        memoryMirror = new int[2048];
+        try{
+            StringReader textarea = new StringReader(memoryArea);
+            BufferedReader reader = new BufferedReader(textarea);
+            System.out.println(memoryArea);
+            String line = null;
+
+            while((line = reader.readLine())!= null)
+            {
+                //Extract code
+                System.out.println("Extracting code");
+                System.out.println(line);
+
+                String address = line.substring(0,4);
+
+                String data = line.substring(6,10);
 
                 long address_number = Long.parseLong(address, 16);
 
@@ -59,11 +95,7 @@ public class CodeReader {
 
 
             }
-//
-//            for(int i = 0; i < memoryMirror.length; i++)
-//            {
-//                System.out.println("Content: " + memoryMirror[i]);
-//            }
+
 
             reader.close();
         }
@@ -73,7 +105,6 @@ public class CodeReader {
             ex.printStackTrace();
         }
     }
-    
 
 
     public int[] getMemoryMirror(){

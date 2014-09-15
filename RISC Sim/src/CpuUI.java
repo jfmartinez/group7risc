@@ -8,7 +8,7 @@ import javax.swing.JFileChooser;
  *
  * @author LUIS
  */
-public class CpuUI extends javax.swing.JFrame {
+public class CpuUI extends javax.swing.JFrame{
 
     private Simulator simulator = new Simulator();
     final JFileChooser fc = new JFileChooser();
@@ -223,7 +223,7 @@ public class CpuUI extends javax.swing.JFrame {
         stepExecuteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
 
-               fieldEditReplacer();
+                fieldEditReplacer();
 
                 simulator.stepExecution();
 
@@ -237,12 +237,27 @@ public class CpuUI extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fieldEditReplacer();
 
-                simulator.Execution();
+                simulator.setStop(false);
+                simulator.addCallback(new ExecutionCallback()); //Adds reference to callback function
+
+
+                (new Thread(simulator)).start();
                 setFieldText();
             }
 
 
         });
+
+
+
+        stopButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulator.setStop(true);
+
+            }
+        });
+
+
 
 
 
@@ -395,29 +410,29 @@ public class CpuUI extends javax.swing.JFrame {
     }// </editor-fold>
 
     private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                      
+    }
 
     private void pcFieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                           
+    }
 
     private void r3FieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                           
+    }
 
     private void r4FieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                           
+    }
 
     private void keyboardFieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                            
+    }
 
     private void asciiFieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                            
+    }
 
     private void r1FieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                           
+    }
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
-    }  
-    
+    }
+
     //Load Action Performed
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {
     	int returnVal = fc.showOpenDialog(this);
@@ -441,7 +456,7 @@ public class CpuUI extends javax.swing.JFrame {
             System.out.append("Open command cancelled by user.\n");
         }
     }
-    
+
     private void setFieldText(){
     	memoryArea.setText(simulator.getMemoryContents());
     	r0Field.setText(simulator.getRegisterContents("0"));
@@ -454,18 +469,18 @@ public class CpuUI extends javax.swing.JFrame {
     	r7Field.setText(simulator.getRegisterContents("7"));
     	irField.setText(simulator.getRegisterContents("IR"));
     	pcField.setText(simulator.getRegisterContents("PC"));
-    	
+
 //    	keyboardField.setText(simulator.getKeyboard());
 //    	parInField.setText(simulator.getParIn());
     	parOutField.setText(simulator.getParOut());
     	asciiField.setText(simulator.getAscii());
     	hexField.setText(simulator.getHex());
-    	
+
     	addressBusField.setText(simulator.getAddressBus());
     	dataBusField.setText(simulator.getDataBus());
     	controlBusField.setText(simulator.getControlBus());
     	condBitField.setText(simulator.getCondBit());
-    	
+
     }
 
     private void fieldEditReplacer()
@@ -491,6 +506,16 @@ public class CpuUI extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Callback for when a program finishes execution
+     */
+    class ExecutionCallback implements Callback
+    {
+        public void callback()
+        {
+            setFieldText();
+        }
+    }
 
 
     private javax.swing.JFileChooser jFileChooser1;

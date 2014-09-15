@@ -27,11 +27,11 @@ import java.io.File;
  *
  * @author Jose F. Martinez Rivera, Luis Murphy, Jose A. Rodriguez Cartagena
  */
-public class Simulator {
+public class Simulator implements Runnable{
 
     CPU cpu;
     Memory mem;
-
+    Callback program_finish; //Alerts that the program has finished execution
     int addressBus; // where the data is written to or read from
     int dataBus; //data that is read or written
     boolean controlBus; //true = 1 = write
@@ -41,8 +41,16 @@ public class Simulator {
     boolean stop=false; //Denotes if it has stopped
 
 
+
     public Simulator(){
         cpu = new CPU();
+    }
+
+
+    //Adds a callback function to the Simulator
+    public void addCallback(Callback gui_callback)
+    {
+        this.program_finish = gui_callback;
     }
 
     public void fetch()
@@ -79,24 +87,38 @@ public class Simulator {
     //Step by step execution of an instruction
     public void stepExecution()
     {
-        if(!stop) {
-            fetchFullIR();
-            decExe();
-        }
+        fetchFullIR();
+        decExe();
+        printStatus();
 
-        else{
-            // Do nothing
-        }
-        this.printStatus();
     }
 
-    //Executes a full Execution cycle until the stop flag is true
-    public void Execution() {
-        do {
+    public void Execution()
+    {
+        while(!stop)
+        {
             stepExecution();
-        }while(this.stop == false);
+        }
+    }
+    //Executes a full Execution cycle until the stop flag is true
+    public void run() {
+
+        while(!stop){
+            try {
+                stepExecution();
+                this.program_finish.callback();
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                throw new RuntimeException("Interrupted",e);
+            }
+        }
+
 
     }
+
+    public void setStop(boolean bool){stop=bool;}
+
 
 
     public void decExe(){
@@ -281,7 +303,7 @@ public class Simulator {
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
 
-                int value =  (int) ((byte)rb_value >>> rc_value) & 0xff;
+                int value =  (int) ((byte)rb_value >> rc_value) & 0xff;
                 cpu.set((int) value , String.valueOf(operands[0]));
 
                 break;
@@ -687,6 +709,10 @@ public class Simulator {
 
 
     }
+
+
+
+
 }
 
 

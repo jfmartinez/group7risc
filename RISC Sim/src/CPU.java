@@ -11,6 +11,11 @@ public class CPU{
 		}
 		
 		//methods
+		/**
+		 * 
+		 * @param s String values: "IR", "PC", integers 0-7 as strings
+		 * @return value stored in register in integer format
+		 */
 		public int get(String s){
 			if (s.equalsIgnoreCase("IR")){
 				return IR;
@@ -23,6 +28,11 @@ public class CPU{
 			}
 		}
 			
+		/**
+		 * 
+		 * @param newValue value to be stored
+		 * @param registerToSet string that represents register tostore in
+		 */
 		public void set(int newValue, String registerToSet){
 			if (registerToSet.equalsIgnoreCase("IR")){
 				IR = newValue;

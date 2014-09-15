@@ -76,6 +76,7 @@ public class Simulator {
 
     }
 
+    //Step by step execution of an instruction
     public void stepExecution()
     {
         if(!stop) {
@@ -247,9 +248,8 @@ public class Simulator {
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
 
-                if((rb_value & 0x80) == 1)
-                    rb_value += 0xF00;
-                cpu.set(((rb_value)>> rc_value) & 0x0FF, String.valueOf(operands[0]));
+                byte value = (byte) (rb_value >> rc_value);
+                cpu.set((int) value , String.valueOf(operands[0]));
 
                 break;
 
@@ -612,31 +612,38 @@ public class Simulator {
         return result;
     }
 
+    //Returns the register content from the cpu
     public String getRegisterContents(String reg){
         return ""+hexString(cpu.get(reg));
     }
 
-
+    //the address bus
     public String getAddressBus(){return hexString(addressBus);}
+
+    //Control bus representation
     public String getControlBus(){
         if (controlBus) return "1";
         else return "0";
     }
 
 
-
+    //Gets the databus value of the CPU
     public String getDataBus(){return hexString(dataBus);}
+
+    //Condition bit
     public String getCondBit(){
         if (condBit) return "1";
         else return "0";}
 
-
+    //Refreshes the reigster data in the CPU with respect to the GUI
     public void editRegisters(String registerID, int value){
 
 
          cpu.set(value, registerID);
     }
 
+
+    //Copies the memory from the GUI, could be edited
     public void memoryCopy(String memoryCopy){
         CodeReader codereader = new CodeReader();
         codereader.extractCodeString(memoryCopy);

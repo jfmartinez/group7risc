@@ -456,7 +456,7 @@ public class CpuUI extends javax.swing.JFrame {
     	pcField.setText(simulator.getRegisterContents("PC"));
     	
 //    	keyboardField.setText(simulator.getKeyboard());
-    	parInField.setText(simulator.getParIn());
+//    	parInField.setText(simulator.getParIn());
     	parOutField.setText(simulator.getParOut());
     	asciiField.setText(simulator.getAscii());
     	hexField.setText(simulator.getHex());

@@ -31,7 +31,7 @@ public class Memory{
 		public void set(int newValue, int i){
 
             if(checkAccess(i))
-              sysMem[i] = newValue;
+              sysMem[i] = newValue & 0xFF;
 		}
 		
 		public void reset(){

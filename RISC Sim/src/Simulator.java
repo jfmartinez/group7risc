@@ -87,6 +87,7 @@ public class Simulator {
         else{
             // Do nothing
         }
+        this.printStatus();
     }
 
     //Executes a full Execution cycle until the stop flag is true
@@ -307,7 +308,9 @@ public class Simulator {
                 int operands[] = interpretF1Format();
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
-                int value = rb_value >>> rc_value | (rb_value << (Byte.SIZE -rc_value));
+
+                //Assume rc_value is smaller than a byte and it's a nonnegative numebr
+                int value = rb_value >>> rc_value %Byte.SIZE| (rb_value << (Byte.SIZE -rc_value%Byte.SIZE));
                 cpu.set(value & 0xFF, String.valueOf(operands[0]));
 
 
@@ -319,12 +322,13 @@ public class Simulator {
             case 19:
             {
                 System.out.println("RTL Operation");
-
                 int operands[] = interpretF1Format();
                 int rb_value = cpu.get(String.valueOf(operands[1]));
                 int rc_value = cpu.get(String.valueOf(operands[2]));
-                int value = ( (rb_value << rc_value) |(rb_value  >> (Byte.SIZE - rc_value))) ;
+                int value = ( (rb_value << rc_value%Byte.SIZE) |(rb_value  >> (Byte.SIZE - rc_value%Byte.SIZE))) ;
 
+
+                //Assume rc_value is smaller than a byte and it's a nonnegative numebr
                 cpu.set((int) value & 0xFF, String.valueOf(operands[0]));
 
                 break;
@@ -669,6 +673,18 @@ public class Simulator {
         CodeReader codereader = new CodeReader();
         codereader.extractCodeString(memoryCopy);
         mem = new Memory(codereader.getMemoryMirror());
+
+    }
+
+    private void printStatus()
+    {
+        for(int i = 0; i < 8; i ++)
+            System.out.print("R"+i+": " + hexString(cpu.get(""+i)) + " | ");
+
+        System.out.println();
+        System.out.println("PC: " + hexString(cpu.get("PC"))+ " | IR: " + hexString(cpu.get("IR")));
+
+
 
     }
 }

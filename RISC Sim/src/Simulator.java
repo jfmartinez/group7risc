@@ -29,7 +29,7 @@ public class Simulator {
 	CPU cpu;
 	Memory mem;
 
-	int addressBus; // where the data is written to or read from
+	int addressBus; // where the data is written to or read from, 16 bits
 	int dataBus; //data that is read or written
 	boolean controlBus; //true = 1 = write
 	boolean condBit; //altered by arithmetic/logic instructions
@@ -100,19 +100,71 @@ public class Simulator {
 			int valueInMem = mem.get(address);
 			cpu.set(valueInMem, ""+ops[1]);
 			break;}
-		//ARITMETICA
+		//ARITMETICA (two's complement)
+		//if ( msbit(opa) == msbit(opb) ) && ( msbit(res) != msbit(opb) ) signed overflow, else no signed overflow
 		case 7:{ //ADD Ra,Rb,Rc {F1}		R[ra]<- R[rb]+R[rc]
+			//Registers hold numbers from 0-255. From 0-127, all numbers positive, okay.
+			//From 128-255, they represent negative numbers, they have a 256 bias.
 			int ops[] = interpretF1Format();
+			int opa,opb;
+			if (cpu.get(""+ops[1])>127) opa=cpu.get(""+ops[1])-256;
+			else opa=cpu.get(""+ops[1]);
 			
+			if (cpu.get(""+ops[2])>127) opb=cpu.get(""+ops[2])-256;
+			else opb=cpu.get(""+ops[2]);
+			
+			int toSet = opa+opb;
+			if (toSet<0) {condBit=true; toSet+=256;}
+			
+			cpu.set(toSet,""+ops[0]);
 			break;}
 		case 8:{ //SUB Ra,Rb,Rc {F1}  R[ra]<- R[rb]-R[rc]
+			//Two's complement subtraction a-b is actually a+(-b)+1
+			//a recieves same treatment as case 7 (bias -256 is >127)
+			//b must be negative. To do so, 
 			int ops[] = interpretF1Format();
+			int opa,opb;
+			if (cpu.get(""+ops[1])>127) opa=cpu.get(""+ops[1])-256;
+			else opa=cpu.get(""+ops[1]);
+			
+			if (cpu.get(""+ops[2])>127) opb=-(cpu.get(""+ops[2])-256);
+			else opb=-cpu.get(""+ops[2]);
+			
+			int toSet = opa+opb+1;
+			if (toSet<0) {condBit=true; toSet+=256;}
+			
+			cpu.set(toSet,""+ops[0]);
 			break;}
 		case 9:{//ADI Ra, cons {F2}  R[1]<= R[ra]+cons
 			int ops[] = interpretF2Format();
+			
+			int opa,opb;
+			if (cpu.get(""+ops[0])>127) opa=cpu.get(""+ops[1])-256;
+			else opa=cpu.get(""+ops[1]);
+			
+			if (ops[1]>127) opb=(ops[1]-256);
+			else opb=ops[1];
+			
+			int toSet = opa+opb;
+			if (toSet<0) {condBit=true; toSet+=256;}
+			
+			cpu.set(toSet,"1");
+			
 			break;}
 		case 10:{//SBI Ra,  cons {F2}  R[1]<= R[ra]-cons
 			int ops[] = interpretF2Format();
+			
+			int opa,opb;
+			if (cpu.get(""+ops[0])>127) opa=cpu.get(""+ops[0])-256;
+			else opa=cpu.get(""+ops[0]);
+			
+			if (ops[1]>127) opb=-(ops[1]-256);
+			else opb=-ops[1];
+			
+			int toSet = opa+opb+1;
+			if (toSet<0) {condBit=true; toSet+=256;}
+			
+			cpu.set(toSet,"1");
 			break;}
 			
 		//LOGICA Y DESPLAZAMIENTO
@@ -239,8 +291,7 @@ public class Simulator {
 		mem.set(test, 140);
 	}
 	
-    public void setMemory(Memory new_mem)
-    {
+    public void setMemory(Memory new_mem){
         mem = new_mem;
     }
 
@@ -253,12 +304,22 @@ public class Simulator {
         return result;
     }
 
+    private String signExtend(String numberToExtend, int totalBits){
+    	String extended = numberToExtend;
+    	String signBit = numberToExtend.substring(0,1);
+    	while (numberToExtend.length()<totalBits){
+    		extended = signBit+extended;
+    	}
+    	return extended;
+    }
+    
+    
+    ///Interpreters
     /**
      * | Ra | Rb | Rc |
      * @return array with 3 register indexes
      */
-    public int[] interpretF1Format()
-    {
+    public int[] interpretF1Format(){
         //Interpret F1 Format
         int operands[] = new int[3];
         //Pull instruction
@@ -283,7 +344,7 @@ public class Simulator {
     }
     
     /**
-     * | register index | address/constant |
+     * | register index | 8 bit address/constant |
      * 
      * @return an array with register index and a constant or an address
      */
@@ -307,6 +368,7 @@ public class Simulator {
         mem.set(hexInput, 128);
     }
 
+
     //String getters
     public String getMemoryContents(){
     	String result="";
@@ -318,7 +380,6 @@ public class Simulator {
     	}
     	return result;
     }
-    
     public String getRegisterContents(String reg){
     	return ""+cpu.get(reg);
     }

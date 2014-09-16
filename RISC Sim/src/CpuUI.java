@@ -81,6 +81,7 @@ public class CpuUI extends javax.swing.JFrame{
         executeButton = new javax.swing.JButton();
         stepExecuteButton = new javax.swing.JButton();
         stopButton = new javax.swing.JButton();
+        instructionField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -113,6 +114,7 @@ public class CpuUI extends javax.swing.JFrame{
         parOutField.setEditable( false );
         asciiField.setEditable( false );
         hexField.setEditable( false );
+        instructionField.setEditable( false );
 
 
         //Set menu bar and actions menu
@@ -335,7 +337,8 @@ public class CpuUI extends javax.swing.JFrame{
 	                    .addComponent(loadButton)
 	                    .addComponent(executeButton)
 	                    .addComponent(stepExecuteButton)
-	                    .addComponent(stopButton))
+	                    .addComponent(stopButton)
+	                    .addComponent(instructionField))
                     .addGap(20,20,20)
                 )
     		)
@@ -410,7 +413,8 @@ public class CpuUI extends javax.swing.JFrame{
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(r7Label)
-                            .addComponent(r7Field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(r7Field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instructionField)))
                     /*.addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)*/)
                 .addContainerGap(22, Short.MAX_VALUE))
         );
@@ -482,8 +486,6 @@ public class CpuUI extends javax.swing.JFrame{
     	irField.setText(simulator.getRegisterContents("IR"));
     	pcField.setText(simulator.getRegisterContents("PC"));
 
-//    	keyboardField.setText(simulator.getKeyboard());
-//    	parInField.setText(simulator.getParIn());
     	parOutField.setText(simulator.getParOut());
     	asciiField.setText(simulator.getAscii());
     	hexField.setText(simulator.getHex());
@@ -492,6 +494,7 @@ public class CpuUI extends javax.swing.JFrame{
     	dataBusField.setText(simulator.getDataBus());
     	controlBusField.setText(simulator.getControlBus());
     	condBitField.setText(simulator.getCondBit());
+    	instructionField.setText(simulator.getInstruction());
 
     }
 
@@ -512,10 +515,6 @@ public class CpuUI extends javax.swing.JFrame{
         simulator.memoryCopy(memoryArea.getText());
         simulator.setParIn(this.parInField.getText());
         simulator.inputKeyboad(keyboardField.getText());
-
-
-
-
     }
 
     /**
@@ -581,6 +580,7 @@ public class CpuUI extends javax.swing.JFrame{
     private javax.swing.JButton executeButton;
     private javax.swing.JButton stepExecuteButton;
     private javax.swing.JButton stopButton;
+    private javax.swing.JTextField instructionField;
 
     // End of variables declaration                   
 }

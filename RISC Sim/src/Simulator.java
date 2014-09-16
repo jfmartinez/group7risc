@@ -110,8 +110,6 @@ public class Simulator implements Runnable{
 
     public void setStop(boolean bool){stop=bool;}
 
-
-
     public void decExe(){
         // TODO IMPLEMENT ALL METHODS
         //Create a method for every instruction?
@@ -534,7 +532,6 @@ public class Simulator implements Runnable{
         return leading_zero + Integer.toString(i, 16);
     }
 
-
     public int[] interpretF1Format()
     {
         //Interpret F1 Format
@@ -569,7 +566,6 @@ public class Simulator implements Runnable{
 
     }
 
-
     public int interpretF3Format()
     {
         //Interpret F3 Format
@@ -595,7 +591,6 @@ public class Simulator implements Runnable{
         }
 
     }
-
 
     //Input parallel in into memory
     public void setParIn(String parallel_in){
@@ -641,6 +636,7 @@ public class Simulator implements Runnable{
 
         return display;
     }
+    
     private String interpretAsHexDisplay(String toInterpret){
         String result;
         int parsed = Integer.parseInt(toInterpret,2);
@@ -699,6 +695,42 @@ public class Simulator implements Runnable{
         return result;
     }
 
+    public String getInstruction(){
+    	switch(cpu.getOpCode()){
+    	case 0: return "LD Ra,mem";
+    	case 1: return "LDI Ra,cons";
+    	case 2: return "LDACC, cons";
+    	case 3: return "ST mem, Ra";
+    	case 4: return "STACC mem";
+    	case 5: return "LDR Ra,Rb";
+    	case 6: return "STR Ra,Rb";
+    	case 7: return "ADD Ra, Rb, Rc";
+    	case 8: return "SUB Ra, Rb, Rc";
+    	case 9: return "ADI Ra, cons";
+    	case 10: return "SBI Ra,cons ";
+    	case 11: return "AND Ra, Rb, Rc ";
+    	case 12: return "OR Ra, Rb, Rc ";
+    	case 13: return "XOR Ra, Rb, Rc";
+    	case 14: return "NOT Ra,Rb ";
+    	case 15: return "NEG Ra,Rb";
+    	case 16: return "SHR Ra, Rb, Rc";
+    	case 17: return "SHL Ra, Rb, Rc";
+    	case 18: return "RTR Ra, Rb, Rc";
+    	case 19: return "RTL Ra, Rb, Rc";
+    	case 20: return "JMPR Ra";
+    	case 21: return "JMPA addr";
+    	case 22: return "JCR Ra";
+    	case 23: return "JCA addr";
+    	case 24: return "LOOP Ra, address";
+    	case 25: return "GR Ra, Rb";
+    	case 26: return "GRE Ra, Rb";
+    	case 27: return "EQ Ra, Rb";
+    	case 28: return "NEQ Ra, Rb";
+    	case 29: return "NOP";
+    	case 30: return "Stop";
+    	default: return "unknown";
+    	}
+    }
 
     //====================================== Microprocessor State Getters ============================================================//
 

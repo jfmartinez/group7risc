@@ -121,28 +121,41 @@ public class Simulator implements Runnable{
 //====================================== MOVIMIENTO DE DATOS ============================================================//
 
             case 0:{//Load data in memory address to register\
+                System.out.println("LOAD Register");
                 int ops[] = interpretF2Format();
                 cpu.set(mem.get(ops[1]), ops[0]+"");
                 break;}
             case 1:{//Load constant to register
+                System.out.println("LOAD Constant to Register");
+
                 int ops[]=interpretF2Format();
                 cpu.set(ops[1], ops[0]+"");
                 break;}
             case 2:{//LDACC const {F3}
+                System.out.println("LOAD Constant to Accum");
+
                 cpu.set(interpretF3Format(), "1");
                 break;}
             case 3:{//ST mem,Ra {F2}
+                System.out.println("Store in MEM contents of Ra");
+
                 int ops[] = interpretF2Format();
                 mem.set(cpu.get(""+ops[0]), ops[1]);
                 break;}
             case 4:{//STACC mem {F3}
+                System.out.println("Store in MEM contents of ACC");
+
                 mem.set(cpu.get("1"), interpretF3Format());
                 break;}
             case 5:{//LDR Ra,Rb{F1}		R[Ra] <- mem[R[Rb]]
+                System.out.println("LOAD register with the data in the address in Rb");
+
                 int ops[] = interpretF1Format();
                 cpu.set(mem.get(cpu.get(""+ops[1])), ""+ops[0]);
                 break;}
             case 6:{//STR Ra,Rb {F1}	R[Rb] <- mem[R[Ra]]
+                System.out.println("Store rbr with the data in the address in ra");
+
                 int ops[]=interpretF1Format();
                 int address = cpu.get(""+ops[0]);
                 int valueInMem = mem.get(address);
@@ -155,6 +168,7 @@ public class Simulator implements Runnable{
             case 7:{ //ADD Ra,Rb,Rc {F1}		R[ra]<- R[rb]+R[rc]
                 //Registers hold numbers from 0-255. From 0-127, all numbers positive, okay.
                 //From 128-255, they represent negative numbers, they have a 256 bias.
+                System.out.println("ADD");
                 int ops[] = interpretF1Format();
                 int opa,opb;
                 if (cpu.get(""+ops[1])>127) opa=cpu.get(""+ops[1])-256;
@@ -172,6 +186,7 @@ public class Simulator implements Runnable{
                 //Two's complement subtraction a-b is actually a+(-b)+1
                 //a recieves same treatment as case 7 (bias -256 is >127)
                 //b must be negative. To do so,
+                System.out.println("SUB");
                 int ops[] = interpretF1Format();
                 int opa,opb;
                 if (cpu.get(""+ops[1])>127) opa=cpu.get(""+ops[1])-256;
@@ -186,6 +201,8 @@ public class Simulator implements Runnable{
                 cpu.set(toSet,""+ops[0]);
                 break;}
             case 9:{//ADI Ra, cons {F2}  R[1]<= R[ra]+cons
+                System.out.println("ADI");
+
                 int ops[] = interpretF2Format();
 
                 int opa,opb;
@@ -202,6 +219,8 @@ public class Simulator implements Runnable{
 
                 break;}
             case 10:{//SBI Ra,  cons {F2}  R[1]<= R[ra]-cons
+                System.out.println("SBI");
+
                 int ops[] = interpretF2Format();
 
                 int opa,opb;

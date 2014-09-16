@@ -10,20 +10,16 @@ public class CodeReader {
 
     private static int[] memoryMirror;
 
-
-    public CodeReader()
-    {
-
-
-    }
-    
+    //Inicializa un Objecto tipo codereader con un archivo
     public CodeReader(File file)
     {
         programFile = file;
         memoryMirror = new int[2048];
 
     }
+    public CodeReader(){}
 
+    //Extrae el codigo del archivo
     public void extractCode()
     {
         try{
@@ -60,6 +56,11 @@ public class CodeReader {
             ex.printStackTrace();
         }
     }
+
+    /**
+     * Method used for extracting the code from the current textfield in the GUI
+     * @param memoryArea
+     */
     public void extractCodeString(String memoryArea)
     {
         memoryMirror = new int[2048];
@@ -71,9 +72,6 @@ public class CodeReader {
             while((line = reader.readLine())!= null)
             {
                 //Extract code
-//                System.out.println("Extracting code");
-//                System.out.println(line);
-
                 String address = line.substring(0,4);
 
                 String data = line.substring(6,10);
@@ -88,10 +86,7 @@ public class CodeReader {
                 memoryMirror[(int)address_number] = (int) Integer.parseInt(big_endian_one, 16);
                 memoryMirror[(int)address_number + 1] = (int) Integer.parseInt(big_endian_two, 16);
 
-
             }
-
-
             reader.close();
         }
 

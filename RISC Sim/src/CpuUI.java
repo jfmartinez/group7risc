@@ -450,6 +450,7 @@ public class CpuUI extends javax.swing.JFrame{
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
+            simulator.resetSim();
             simulator.loadMemory(file);
             setFieldText();
         } else {

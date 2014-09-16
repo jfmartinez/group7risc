@@ -33,6 +33,11 @@ public class Memory{
             if(checkAccess(i))
               sysMem[i] = newValue & 0xFF;
 		}
+
+    public void inputIO(int newValue, int i){
+
+            sysMem[i] = newValue & 0xFF;
+    }
 		
 		public void reset(){
 			sysMem = new int[MEMORY_SIZE];

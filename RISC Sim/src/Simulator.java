@@ -93,13 +93,6 @@ public class Simulator implements Runnable{
 
     }
 
-    public void Execution()
-    {
-        while(!stop)
-        {
-            stepExecution();
-        }
-    }
     //Executes a full Execution cycle until the stop flag is true
     public void run() {
 
@@ -113,8 +106,6 @@ public class Simulator implements Runnable{
                 throw new RuntimeException("Interrupted",e);
             }
         }
-
-
     }
 
     public void setStop(boolean bool){stop=bool;}
@@ -537,6 +528,7 @@ public class Simulator implements Runnable{
     {
         //Interpret F1 Format
         int operands[] = new int[3];
+
         //Pull instruction
         int instruction = cpu.get("IR");
 
@@ -588,7 +580,7 @@ public class Simulator implements Runnable{
         if(input.equalsIgnoreCase("")) return;
         else {
             int hexInput = Integer.valueOf(input, 16);
-            mem.set(hexInput & 0xFF, 128);
+            mem.inputIO(hexInput & 0xFF, 128);
         }
 
     }
@@ -599,7 +591,7 @@ public class Simulator implements Runnable{
 
         try {
             int par_in = Integer.parseInt(parallel_in, 16) ;
-            mem.set(par_in & 0xFF, 130);
+            mem.inputIO(par_in & 0xFF, 130);
         } catch(NumberFormatException e) {
             //Do Nothing
         }
@@ -706,7 +698,11 @@ public class Simulator implements Runnable{
         System.out.println();
         System.out.println("PC: " + hexString(cpu.get("PC"))+ " | IR: " + hexString(cpu.get("IR")));
 
+    }
 
+    public void resetSim()
+    {
+        this.cpu = new CPU();
 
     }
 

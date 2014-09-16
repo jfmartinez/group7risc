@@ -10,7 +10,7 @@ import javax.swing.JFileChooser;
  */
 public class CpuUI extends javax.swing.JFrame {
 
-    private Simulator simulator = new Simulator();
+    private static Simulator simulator = new Simulator();
     final JFileChooser fc = new JFileChooser();
 
     /**

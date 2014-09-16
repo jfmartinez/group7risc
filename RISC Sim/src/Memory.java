@@ -12,7 +12,7 @@ public class Memory{
 
         private final int ascii_display = 140;
         private final int ascii_display_final = 155;
-        private final int MEMORY_SIZE = 1024;
+        private final int MEMORY_SIZE = 2048;
 
         
         //constructor
@@ -27,17 +27,17 @@ public class Memory{
 		public int get(int i){
 			return sysMem[i];
 		}
-		
-		/**
-		 * 
-		 * @param newValue value to store in memory
-		 * @param i cell address
-		 */
+			
 		public void set(int newValue, int i){
 
             if(checkAccess(i))
-              sysMem[i] = newValue;
+              sysMem[i] = newValue & 0xFF;
 		}
+
+    public void inputIO(int newValue, int i){
+
+            sysMem[i] = newValue & 0xFF;
+    }
 		
 		public void reset(){
 			sysMem = new int[MEMORY_SIZE];
@@ -45,22 +45,25 @@ public class Memory{
 
 
         private boolean checkAccess(int address_access){
+
             if(address_access == keyboard_location) return false;
 
-            if(address_access == parallel_in || address_access == parallel_out) return false;
+            if(address_access == parallel_in) return false;
 
-            if(address_access >= hex_display_min && address_access <= hex_display_max) return false;
+            if(address_access == parallel_out) return true;
 
-            if(address_access >= ascii_display && address_access <= ascii_display_final) return false;
+            if(address_access >= hex_display_min && address_access <= hex_display_max) return true;
+
+            if(address_access >= ascii_display && address_access <= ascii_display_final) return true;
 
             else
                 return true;
         }
 
+
+
         public int getMemorySize(){
         	return MEMORY_SIZE;
         }
-
-
 
 	}

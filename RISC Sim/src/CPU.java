@@ -54,7 +54,6 @@ public class CPU{
 		public int getOpCode(){
 
             int intOpCode = (IR >> 11) & 0x1F; //Shift Code 11 bits to get the first 5 bits
-            System.out.println("Opcode: " + intOpCode);
             return intOpCode;
 		}
 
@@ -62,6 +61,5 @@ public class CPU{
         {
             this.IR  = this.IR << 8;
             this.IR = this.IR + ir_byte;
-            System.out.println(Integer.toHexString(this.IR));
         }
 	}

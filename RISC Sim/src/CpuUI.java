@@ -1,14 +1,21 @@
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 
 /**
  *
  * @author LUIS
  */
-public class CpuUI extends javax.swing.JFrame {
+public class CpuUI extends javax.swing.JFrame{
 
     private static Simulator simulator = new Simulator();
     final JFileChooser fc = new JFileChooser();
@@ -17,10 +24,10 @@ public class CpuUI extends javax.swing.JFrame {
      * Creates new form CpuUI
      */
     public CpuUI() {
-    	initComponents();
+        initComponents();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
         jFileChooser1 = new JFileChooser();
@@ -103,7 +110,11 @@ public class CpuUI extends javax.swing.JFrame {
         stepExecuteButton.setText("Step Execute");
         stopButton.setText("Stop");
         
-        
+        parOutField.setEditable( false );
+        asciiField.setEditable( false );
+        hexField.setEditable( false );
+
+
         //Set menu bar and actions menu
         setJMenuBar(jMenuBar1);
         jMenuBar1.add(jMenu1);
@@ -113,7 +124,7 @@ public class CpuUI extends javax.swing.JFrame {
                 jMenu1ActionPerformed(evt);
             }
         });
-        
+
         //Add actions to menu
         jMenu1.add(jMenuItem5);
         jMenuItem5.setText("Load");
@@ -122,7 +133,7 @@ public class CpuUI extends javax.swing.JFrame {
                 jMenuItem5ActionPerformed(evt);
             }
         });
-        
+
         jMenu1.add(jMenuItem2);
         jMenuItem2.setText("Stop");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -130,7 +141,7 @@ public class CpuUI extends javax.swing.JFrame {
                 jMenuItem2ActionPerformed(evt);
             }
         });
-        
+
         jMenu1.add(jMenuItem6);
         jMenuItem6.setText("Step");
         jMenuItem6.addActionListener(new ActionListener(){
@@ -200,7 +211,7 @@ public class CpuUI extends javax.swing.JFrame {
 
             }
         });
-        
+
         keyboardField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 keyboardFieldActionPerformed(evt);
@@ -212,7 +223,7 @@ public class CpuUI extends javax.swing.JFrame {
                 asciiFieldActionPerformed(evt);
             }
         });
-        
+
         loadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadButtonActionPerformed(evt);
@@ -222,33 +233,41 @@ public class CpuUI extends javax.swing.JFrame {
         stepExecuteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
 
-               fieldEditReplacer();
+                fieldEditReplacer();
 
                 simulator.stepExecution();
 
                 setFieldText();
             }
-            
-        
+
+
         });
-        
+
         executeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fieldEditReplacer();
 
                 simulator.setStop(false);
+                simulator.addCallback(new ExecutionCallback()); //Adds reference to callback function
+
+
                 (new Thread(simulator)).start();
                 setFieldText();
             }
-            
-        
+
+
         });
-        
+
+
+
         stopButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 simulator.setStop(true);
+
             }
         });
+
+
 
 
 
@@ -396,34 +415,35 @@ public class CpuUI extends javax.swing.JFrame {
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
+
         pack();
         setVisible(true);
-    }// </editor-fold>                        
+    }// </editor-fold>
 
     private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                      
+    }
 
     private void pcFieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                           
+    }
 
     private void r3FieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                           
+    }
 
     private void r4FieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                           
+    }
 
     private void keyboardFieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                            
+    }
 
     private void asciiFieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                            
+    }
 
     private void r1FieldActionPerformed(java.awt.event.ActionEvent evt) {
-    }                                           
+    }
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
-    }  
-    
+    }
+
     //Load Action Performed
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {
     	int returnVal = fc.showOpenDialog(this);
@@ -441,13 +461,14 @@ public class CpuUI extends javax.swing.JFrame {
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
+            simulator.resetSim();
             simulator.loadMemory(file);
             setFieldText();
         } else {
             System.out.append("Open command cancelled by user.\n");
         }
     }
-    
+
     private void setFieldText(){
     	memoryArea.setText(simulator.getMemoryContents());
     	r0Field.setText(simulator.getRegisterContents("0"));
@@ -460,18 +481,18 @@ public class CpuUI extends javax.swing.JFrame {
     	r7Field.setText(simulator.getRegisterContents("7"));
     	irField.setText(simulator.getRegisterContents("IR"));
     	pcField.setText(simulator.getRegisterContents("PC"));
-    	
+
 //    	keyboardField.setText(simulator.getKeyboard());
 //    	parInField.setText(simulator.getParIn());
     	parOutField.setText(simulator.getParOut());
     	asciiField.setText(simulator.getAscii());
     	hexField.setText(simulator.getHex());
-    	
+
     	addressBusField.setText(simulator.getAddressBus());
     	dataBusField.setText(simulator.getDataBus());
     	controlBusField.setText(simulator.getControlBus());
     	condBitField.setText(simulator.getCondBit());
-    	
+
     }
 
     private void fieldEditReplacer()
@@ -489,9 +510,7 @@ public class CpuUI extends javax.swing.JFrame {
 
 
         simulator.memoryCopy(memoryArea.getText());
-
-        System.out.println(keyboardField.getText());
-
+        simulator.setParIn(this.parInField.getText());
         simulator.inputKeyboad(keyboardField.getText());
 
 
@@ -499,6 +518,16 @@ public class CpuUI extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Callback for when a program finishes execution
+     */
+    class ExecutionCallback implements Callback
+    {
+        public void callback()
+        {
+            setFieldText();
+        }
+    }
 
 
     private javax.swing.JFileChooser jFileChooser1;

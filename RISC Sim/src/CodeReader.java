@@ -38,7 +38,6 @@ public class CodeReader {
                 //Extract code
 
                 String address = line.substring(0,4);
-//                System.out.println("Address: " + address);
                 String data = line.substring(6,10);
 
                 long address_number = Long.parseLong(address, 16);
@@ -50,8 +49,6 @@ public class CodeReader {
 
                 memoryMirror[(int)address_number] = (int) Integer.parseInt(big_endian_one, 16);
                 memoryMirror[(int)address_number + 1] = (int) Integer.parseInt(big_endian_two, 16);
-
-
 
             }
 

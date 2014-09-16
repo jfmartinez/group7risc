@@ -688,6 +688,63 @@ public class Simulator implements Runnable{
         return result;
     }
 
+    private String interpretAsHexDisplay(String toInterpret){
+    	String result;
+    	int parsed = Integer.parseInt(toInterpret,2);
+    	int anded = parsed & 0x7F;
+    	//given a seven segment display where A turns on with bit 1, B turns on with bit 2, etc...
+    	switch(anded){
+        case 0b0000110:
+        	result ="1";
+        	break;
+        case 0b1011011:
+        	result ="2";
+        	break;
+        case 0b1001111:
+        	result ="3";
+        	break;
+        case 0b1100110:
+        	result ="4";
+        	break;
+        case 0b1101101:
+        	result ="5";
+        	break;
+        case 0b1111101:
+        	result ="6";
+        	break;
+        case 0b0000111:
+        	result ="7";
+        	break;
+        case 0b1111111:
+        	result ="8";
+        	break;
+        case 0b1101111:
+        	result ="9";
+        	break;
+        case 0b1110111:
+        	result ="A";
+        	break;
+        case 0b1111100:
+        	result ="b";
+        	break;
+        case 0b0111001:
+        	result ="C";
+        	break;
+        case 0b1011110:
+        	result ="d";
+        	break;
+        case 0b1111001:
+        	result ="E";
+        	break;
+        case 0b1110001:
+        	result ="F";
+        	break;
+        default:
+        	result="_";
+        }
+        if(toInterpret.substring(0,1).equals("1")) result = result.concat(".");
+        return result;
+    }
     //====================================== Microprocessor State Getters ============================================================//
 
 
@@ -736,9 +793,7 @@ public class Simulator implements Runnable{
 
     //Refreshes the reigster data in the CPU with respect to the GUI
     public void editRegisters(String registerID, int value){
-
-
-         cpu.set(value, registerID);
+    	cpu.set(value, registerID);
     }
 
 
